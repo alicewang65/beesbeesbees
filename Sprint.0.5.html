@@ -18,27 +18,37 @@
 
 <body onload="startGame()">
 
+	<img id="bee_img" src="bee3.png" alt="Bee_Image" style="display : none;">
+	<img id="flower1_img" src="flower1.png" alt="flower1_Image" style="display : none;">
+	<img id="flower2_img" src="rose.png" alt="flower2_Image" style="display : none;">
+	<img id="flower3_img" src="tulip.png" alt="flower3_Image" style="display : none;">
+
 	<script>
-		var myGamePiece; // The bee
-		var scoreBox;	// The score
+		var myBee;		// The bee
+
 		var flowers = [];	// The array of flowers
+		var maxFlowers = 10;
+
+		var scoreBox;	// The score
 		var scoreCount = 0;	// The current score count
 
 		const canvasWidth = 1210;	// Width of the canvas
 		const canvasHeight = 690;	// Height of the canvas
-		const beeSize = 30;			// Size of bees and flowers
+		const beeSize = 50;
+		const flowerWidth = 70;
+		const flowerHeight = 90;
+		var frameNo = 0;
 
 		// Function called to start the game and initialize variables
 		function startGame()
 		{
-			// Creates a square component that represents a bee
-			myGamePiece = new component(beeSize, beeSize, "#ffff66", 225, 120);
-			// Creates a score keeping component
-			scoreBox = new component("30px", "Arial", "#000000", 1000, 50, "text");
+			myBee.start();		// Initializes the bee object that is controlled by the mouse
+			scoreBox.start();	// Initializes the score box object
 
-			// Add a flower component to the flowers array
-			flowers.push(new component(beeSize, beeSize, "pink", 200, 400));
-			// Initialize game area
+			// Add a flower object to the flowers array
+			flowerChange();
+
+			// Initialize game area, and begin the game-running loop
 			myGameArea.start();
 		}
 
@@ -52,7 +62,9 @@
 				this.canvas.height = canvasHeight;
 				this.canvas.setAttribute("id", "myCanvas");
 				this.context = this.canvas.getContext("2d");
-				this.frameNo = 0;
+
+				myBee.draw();
+				scoreBox.update();
 
 				// When the mouse is moved, call mouseMove function (makes bee move)
 				this.canvas.addEventListener("mousemove", function(){mouseMove()});
@@ -67,40 +79,24 @@
 			}
 		}
 
-		// Creates canvas components
-		function component(width, height, color, x, y, type)
+		var myBee = 
 		{
-			this.width = width;
-			this.height = height;
-			this.color = color;
-			this.x = x;
-			this.y = y;
-			this.type = type;
-
-			this.update = function() {
-				if (this.type == "text")
-				{
-					ctx.font = this.width + " " + this.height;
-					ctx.fillStyle = color;
-					ctx.fillText(this.text, this.x, this.y);
-				}
-
-				else
-				{
-					ctx = myGameArea.context;
-					ctx.fillStyle = color;
-					ctx.fillRect(this.x, this.y, this.width, this.height);
-				}
-			}
-
-			this.newPos = function(x, y) {
-				this.x = x - (this.width);
-				this.y = y - (this.height);
+			image : document.getElementById("bee_img"),
+			start : function() {
+				// These widths and heights look like a good size for the bee
+				this.image.width = beeSize;
+				this.image.height = beeSize;
+				this.x = canvasWidth/2 - this.image.width;
+				this.y = canvasHeight/2 - this.image.height;
+			},
+			newPos : function(x, y) {
+				this.x = x - (this.image.width);
+				this.y = y - (this.image.height);
 				this.hitWall();
-			}
+			},
 
 			// If this object is at the edge of the canvas, don't go past the border
-			this.hitWall = function() {
+			hitWall : function() {
 				var bottom = myGameArea.canvas.height - this.height;
 				var right = myGameArea.canvas.width - this.width;
 
@@ -123,18 +119,18 @@
 				{
 					this.x = 0;
 				}
-			}
+			},
 
-			// If this object is touching anoter, return true
-			this.crashWith = function(otherobj) {
+			// If the bee is touching the parameter object, return true
+			crashWith : function(otherobj) {
 				var myleft = this.x;
-				var myright = this.x + this.width;
+				var myright = this.x + this.image.width;
 				var mytop = this.y;
-				var mybottom = this.y + this.height;
-				var otherleft = otherobj.x;
-       			var otherright = otherobj.x + (otherobj.width);
-        		var othertop = otherobj.y;
-        		var otherbottom = otherobj.y + (otherobj.height);
+				var mybottom = this.y + this.image.height;
+				var otherleft = otherobj.getX();
+       			var otherright = otherobj.getX() + (otherobj.getWidth());
+        		var othertop = otherobj.getY();
+        		var otherbottom = otherobj.getY() + (otherobj.getHeight());
         		var crash = true;
 				if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright))
 				{
@@ -142,42 +138,143 @@
         		}
 
         		return crash;
-        	}
+        	},
+
+        	// Draws the bee to the canvas
+			draw : function() {
+				ctx = myGameArea.context;
+				ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
+			}
+		}
+
+		var scoreBox = 
+		{
+			start : function() {
+				this.fontSize = "30px";
+				this.fontStyle = "Arial";
+				this.fontColor = "#000000";
+				this.x = 1000;
+				this.y = 50;
+				this.text = "Score: 0";
+			},
+
+			setText : function(text) {
+				this.text = text;
+			},
+
+			update: function() {
+				ctx = myGameArea.context;
+				ctx.font = this.fontSize + " " + this.fontStyle;
+				ctx.fillStyle = this.fontColor;
+				ctx.fillText(this.text, this.x, this.y);
+			}
+		}
+
+		// Creates canvas components
+		function flower(x, y, image)
+		{
+			this.x = x;
+			this.y = y;
+			this.image = image;
+			this.image.width = flowerWidth;
+			this.image.height = flowerHeight;
+			this.lifeSpan = 10;
+
+			this.getX = function() {
+				return this.x;
+			}
+
+			this.getY = function() {
+				return this.y;
+			}
+
+			this.getWidth = function() {
+				return this.image.width;
+			}
+
+			this.getHeight = function() {
+				return this.image.height;
+			}
+
+			this.setX = function(x) {
+				this.x = x;
+			}
+
+			this.setY = function(y) {
+				this.y = y;
+			}
+
+			this.hit = function() {
+				scoreCount++;
+			}
+
+			this.age = function() {
+				this.lifeSpan--;
+				if (this.lifeSpan <= 0)
+					return true;
+				else
+					return false;
+			}
+
+			this.update = function() {
+				ctx = myGameArea.context;
+				ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
+			}
 		}
 
 		// Reanimates the canvas, checks if a bee is hovering over a flower, and update the score
 		function updateGameArea()
 		{
 			myGameArea.clear();
-			myGameArea.frameNo++;
-			moveFlower();
+			frameNo++;
+
+			// Every 50 frames (or one second), there is a chance of flowers moving/deleting/creating
+			if (frameNo % 50 == 0)
+			{
+				flowerChange();
+			}
 
 			for (ii = 0; ii < flowers.length; ii++)
 			{
-				if (myGamePiece.crashWith(flowers[ii]))
+				if (myBee.crashWith(flowers[ii]))
 				{
-					scoreCount++;
+					flowers[ii].hit();
 				}
 
 				flowers[ii].update();
 			}
 
-			myGamePiece.update();
-			scoreBox.text = "SCORE: " + scoreCount;
+			myBee.draw();
+
+			scoreBox.setText("SCORE: " + scoreCount);
 			scoreBox.update();
 		}
 
-		// Moves the flower to a random new position at random intervals
-		function moveFlower()
+		// Moves/Deletes/Creates the flower at a random new position at random intervals
+		function flowerChange()
 		{
-			if ((myGameArea.frameNo / 100) % 1 == 0 && (Math.floor(Math.random() * 10) % 2 == 0))
+			for (ii = flowers.length; ii < maxFlowers; ii++)
 			{
-				for (ii = 0; ii < flowers.length; ii++)
+				// 1/1 chance for new flower if there are 0, 1/2 chance if there is 1 flower, 1/3 chance if there are 2 flowers, and so on... Do we want to change flowers.length in the if statement to ii?
+				if (Math.floor(Math.random()*(flowers.length + 1)) == 0)
 				{
-					flowers[ii].x = Math.floor(Math.random() *canvasWidth);
-					flowers[ii].y = Math.floor(Math.random() *canvasHeight);
+					randomX = Math.floor(Math.random() * (canvasWidth - flowerWidth));
+					randomY = Math.floor(Math.random() * (canvasHeight - flowerHeight));
+					randomImageId = Math.floor(Math.random() * 3) + 1;
+					flowers.push(new flower(randomX, randomY, document.getElementById("flower" + randomImageId + "_img")));
 				}
+			}
 
+			// For each flower in the array
+			for (jj = 0; jj < flowers.length; jj++)
+			{
+				// If the flower has been alive for 10 seconds with no interaction, it dies
+				if (flowers[jj].age())
+				{
+					flowers.splice(jj, 1);
+					// If this flower was deleted a new one will take this index spot, so we need to shift back the index value one in order to check the next flower
+					jj--;
+				}
 			}
 
 		}
@@ -187,7 +284,7 @@
 		{
 			var mouseX = event.clientX;
 			var mouseY = event.clientY;
-			myGamePiece.newPos(mouseX, mouseY);
+			myBee.newPos(mouseX, mouseY);
 		}
 
 	</script>
