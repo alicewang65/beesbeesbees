@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Makes the screen fit the device -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<title>Bees Bees Bees</title>
+
+		<style>
+			canvas
+			{
+				border: 1px solid #000000;
+				background-color: #b3ffb3;
+			}
+		</style>
+	</head>
+
+
+<body onload="startGame()">
+
+	<img id="bee_img" src="bee3.png" alt="Bee_Image" style="display : none;">
+	<img id="flower1_img" src="flower1.png" alt="flower1_Image" style="display : none;">
+	<img id="flower2_img" src="rose.png" alt="flower2_Image" style="display : none;">
+	<img id="flower3_img" src="tulip.png" alt="flower3_Image" style="display : none;">
+
+	<script src="myBee.js"></script>
+	<script src="flower.js"></script>
+	<script src="rock.js"></script>
+	<script src="textBox.js"></script>
+
+	<script>
+		var myBee;		// The bee
+		var allObjects = []; // The array of every object that needs to be drawn
+
+		var flowers = [];	// The array of flowers, used for creating/deleting flowers
+		var rocks = [];
+		var maxFlowers = 10; // The maximum amount of flowers that can appear on the screen at once
+		var maxFlowerHoney = 100; // The maximum amount of honey a flower can contain
+
+		var scoreBox;	// The score textBox
+		var scoreCount = 0;	// The current score count
+		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
+
+		const canvasWidth = 1210;	// Width of the canvas
+		const canvasHeight = 710;	// Height of the canvas
+		const beeSize = 50;			// The height/width of the bee
+		const rockSize = 50;		// The height/width of rocks
+		const flowerWidth = 70;		// The max width of the flower
+		const flowerHeight = 90;	// The max height of the flower
+		var frameNo = 0;			// The number of frames that have passed
+
+		// Function called to start the game and initialize variables
+		function startGame()
+		{
+			// Initializes the bee object that is controlled by the mouse
+			myBee.start();
+
+			// Initialize game area, and begin the game-running loop
+			myGameArea.start();
+		}
+
+		// Variable that contains all canvas elements
+		var myGameArea = 
+		{
+			// Create and initialize canvas
+			canvas : document.createElement("canvas"),
+			start : function() {
+				this.canvas.width = canvasWidth;
+				this.canvas.height = canvasHeight;
+				this.canvas.setAttribute("id", "myCanvas");
+				this.context = this.canvas.getContext("2d");
+
+				// Creates the score textBox object. These x and y positions just look good
+				scoreBox = new textBox(30, "Arial", canvasWidth*(.8), canvasHeight*(.05), "Score: 0", "#000000", false);
+
+				// Add flower object(s) to the flowers array
+				obstacleChange();
+
+				// Draw the bee and scoreBox for the initial frame
+				myBee.draw();
+				scoreBox.update();
+
+				// When the mouse is moved, call mouseMove function (makes bee move)
+				this.canvas.addEventListener("mousemove", function(){mouseMove()});
+				// Add the canvas to the start of html body
+				document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+
+				// Every 20ms, call the updateGameArea function
+				this.interval = setInterval(updateGameArea, 20);
+			},
+			clear : function() {
+				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			}
+		}
+
+		// Reanimates the canvas, checks if a bee is hovering over a flower, and update the score
+		function updateGameArea()
+		{
+			myGameArea.clear();
+			frameNo++;
+
+			// Every 50 frames (or one second), there is a chance of flowers/rocks moving/deleting/creating
+			if (frameNo % 50 == 0)
+			{
+				obstacleChange();
+			}
+
+			checkScore();
+
+			// Update the score for the game
+			scoreBox.setText("SCORE: " + scoreString);
+
+			// Checks all objects if they are in contact with the bee and updates them
+			for (ii = 0; ii < allObjects.length; ii++)
+			{
+				if (crash(myBee, allObjects[ii]))
+				{
+					allObjects[ii].hit();
+				}
+
+				allObjects[ii].update();
+			}
+
+			scoreBox.update();
+			myBee.draw();
+		}
+
+		// Deletes/Creates flowers/rocks at a random new position at random intervals
+		function obstacleChange()
+		{
+			for (ii = flowers.length; ii < maxFlowers; ii++)
+			{
+				// 1/1 chance for new flower if there are 0, 1/2 chance if there is 1 flower, 1/3 chance if there are 2 flowers, and so on... Do we want to change flowers.length in the if statement to ii?
+				if (Math.floor(Math.random()*(flowers.length + 1)) == 0)
+				{
+					randomX = Math.floor(Math.random() * (canvasWidth - flowerWidth));
+					randomY = Math.floor(Math.random() * (canvasHeight - flowerHeight));
+					randomImageId = Math.floor(Math.random() * 3) + 1;
+					tempFlower = new flower(randomX, randomY, document.getElementById("flower" + randomImageId + "_img"));
+
+					// Make sure the new flower isn't in contact with any rocks or the scoreBox
+					for (rr = 0; rr < rocks.length; rr++)
+					{
+						if (!avoid(tempFlower, rocks[rr]) || !avoid(tempFlower, scoreBox))
+						{
+							// If the flower is in contact with something, we have to check the whole array again with the new position
+							rr = 0;
+						}
+					}
+
+					flowers.push(tempFlower);
+					allObjects.push(tempFlower);
+				}
+			}
+
+			// 1/20 chance of a rock spawning
+			if (Math.floor(Math.random()*20) == 0)
+			{
+				randomX = Math.floor(Math.random() * (canvasWidth - rockSize));
+				randomY = Math.floor(Math.random() * (canvasHeight - rockSize));
+				newRock = new rock(randomX, randomY);
+
+				// Make sure the new rock isn't in contact with any other object or the scoreBox
+				for (oo = 0; oo < allObjects.length; oo++)
+				{
+					if (!avoid(newRock, allObjects[oo]) || !avoid(newRock, scoreBox))
+					{
+						// If the rock is in contact with something, we have to check the whole array again with the new position
+						oo = 0;
+					}
+				}
+
+				rocks.push(newRock);
+				allObjects.push(newRock);
+			}
+
+			// For each flower in the array
+			for (ff = 0; ff < flowers.length; ff++)
+			{
+				// Take off some of its lifespan
+				flowers[ff].age();
+			}
+
+			// For each rock in the array
+			for (rr = 0; rr < rocks.length; rr++)
+			{
+				// Take off some of its lifespan
+				rocks[rr].age();
+			}
+
+		}
+
+		// If this object is at the edge of the canvas, don't go past the border
+		function hitWall(obj)
+		{
+			var bottom = myGameArea.canvas.height - obj.getHeight();
+			var right = myGameArea.canvas.width - obj.getWidth();
+
+			if (obj.getY() > bottom)
+			{
+				obj.setY(bottom);
+			}
+
+			if (obj.getY() < 0)
+			{
+				obj.setY(0);
+			}
+
+			if (obj.getX() > right)
+			{
+				obj.setX(right);
+				}
+
+			if (obj.getX() < 0)
+			{
+				obj.setX(0);
+			}
+		}
+
+		// Checks if two objects are in contact
+		function crash(obj1, obj2)
+		{
+			var myleft = obj1.getX();
+			var myright = obj1.getX() + obj1.getWidth();
+			var mytop = obj1.getY();
+			var mybottom = obj1.getY() + obj1.getHeight();
+			var otherleft = obj2.getX();
+			var otherright = obj2.getX() + (obj2.getWidth());
+			var othertop = obj2.getY();
+			var otherbottom = obj2.getY() + (obj2.getHeight());
+			var crash = true;
+
+			if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright))
+			{
+    			crash = false;
+			}
+
+			return crash;
+		}
+
+		// Repositions an object toCreate to avoid an object toAvoid. Returns true if the objects were never in contact, or false if toCreate was repositioned.
+		function avoid(toCreate, toAvoid)
+		{
+			while (crash(toCreate, toAvoid))
+			{
+				randomX = Math.floor(Math.random() * (canvasWidth - rockSize));
+				randomY = Math.floor(Math.random() * (canvasHeight - rockSize));
+				toCreate.setX(randomX);
+				toCreate.setY(randomY);
+
+				return false;
+			}
+
+			return true;
+		}
+
+		// Moves the bee according to the cursor, and save data for rock bounce animation
+		function mouseMove()
+		{
+			var mouseX = event.clientX;
+			var mouseY = event.clientY;
+			myBee.newPos(mouseX, mouseY);
+
+		}
+
+		function checkScore()
+		{
+			if (scoreCount < 0)
+			{
+				scoreCount = 0;
+				scoreString = scoreCount;
+			}
+
+			else if (scoreCount >= 0 && scoreCount < 1000)
+			{
+				scoreString = scoreCount.toString();
+			}
+
+			else if (scoreCount >= 1000 && scoreCount < 1000000)
+			{
+				scoreString = scoreCount.toString();
+				strIndex = scoreString.length - 3; // This is the index where the comma will go
+				scoreString = scoreString.substring(0, strIndex) + "," + scoreString.substring(strIndex);
+			}
+
+			else if (scoreCount >= 1000000 && scoreCount < 1000000000)
+			{
+				scoreString = (scoreCount/1000000).toFixed(3) + " Million";
+			}
+
+			else if (scoreCount >= 1000000000 && scoreCount < 1000000000000)
+			{
+				scoreString = (scoreCount/1000000000).toFixed(3) + " Billion";
+			}
+
+			else if (scoreCount >= 1000000000000 && scoreCount < 1000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000).toFixed(3) + " Trillion";
+			}
+
+			else if (scoreCount >= 1000000000000000 && scoreCount < 1000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000).toFixed(3) + " Quadrillion";
+			}
+
+			else if (scoreCount >= 1000000000000000000 && scoreCount < 1000000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000000).toFixed(3) + " Pentillion";
+			}
+
+			else if (scoreCount >= 1000000000000000000000 && scoreCount < 1000000000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000000000).toFixed(3) + " Hexillion";
+			}
+
+			else if (scoreCount >= 1000000000000000000000000 && scoreCount < 1000000000000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000000000000).toFixed(3) + " Septillion";
+			}
+
+			else if (scoreCount >= 1000000000000000000000000000 && scoreCount < 1000000000000000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000000000000000).toFixed(3) + " Octillion";
+			}
+
+			else if (scoreCount >= 1000000000000000000000000000000 && scoreCount < 1000000000000000000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000000000000000000).toFixed(3) + " Nonillion";
+			}
+
+			else if (scoreCount >= 1000000000000000000000000000000000 && scoreCount < 1000000000000000000000000000000000000)
+			{
+				scoreString = (scoreCount/1000000000000000000000000000000000).toFixed(3) + " Decillion";
+			}
+
+			else
+			{
+				scoreString = "Infinity";
+			}
+		}
+
+	</script>
+
+
+</body>
+</html>
