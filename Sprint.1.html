@@ -136,7 +136,10 @@
 					randomX = Math.floor(Math.random() * (canvasWidth - flowerWidth));
 					randomY = Math.floor(Math.random() * (canvasHeight - flowerHeight));
 					randomImageId = Math.floor(Math.random() * 3) + 1;
-					tempFlower = new flower(randomX, randomY, document.getElementById("flower" + randomImageId + "_img"));
+					flowerImage = new Image();
+					flowerImage.src = "flower1.png";
+
+					tempFlower = new flower(randomX, randomY, flowerImage);
 
 					// Make sure the new flower isn't in contact with any rocks or the scoreBox
 					for (rr = 0; rr < rocks.length; rr++)

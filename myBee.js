@@ -1,10 +1,10 @@
 // Bee object, which interacts with game screen and follows the mouse
 var myBee = 
 {
-	// Gets the bee image from the html code
-	image : document.getElementById("bee_img"),
-
 	start : function() {
+		// Gets the bee image from the html code
+		this.image = new Image();
+		this.image.src = "bee3.png";
 		// These widths and heights look like a good size for the bee
 		this.image.width = beeSize;
 		this.image.height = beeSize;
