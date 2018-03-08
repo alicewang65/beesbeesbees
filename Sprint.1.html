@@ -7,10 +7,18 @@
 		<title>Bees Bees Bees</title>
 
 		<style>
-			canvas
+			#myCanvas
 			{
 				border: 1px solid #000000;
 				background-color: #b3ffb3;
+			}
+
+			#upgradeCanvas
+			{
+				border: 1px solid #000000;
+				border-left: none;
+				background-color: pink;
+
 			}
 		</style>
 	</head>
@@ -22,6 +30,7 @@
 	<img id="flower1_img" src="flower1.png" alt="flower1_Image" style="display : none;">
 	<img id="flower2_img" src="rose.png" alt="flower2_Image" style="display : none;">
 	<img id="flower3_img" src="tulip.png" alt="flower3_Image" style="display : none;">
+	<img id="rock_img" src="rock.png" alt="rock_Image" style="display : none;">
 
 	<script src="myBee.js"></script>
 	<script src="flower.js"></script>
@@ -41,13 +50,16 @@
 		var scoreCount = 0;	// The current score count
 		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
-		const canvasWidth = 1210;	// Width of the canvas
+		const canvasWidth = 950;	// Width of the canvas - 1210 originally
 		const canvasHeight = 710;	// Height of the canvas
 		const beeSize = 50;			// The height/width of the bee
 		const rockSize = 50;		// The height/width of rocks
 		const flowerWidth = 70;		// The max width of the flower
 		const flowerHeight = 90;	// The max height of the flower
 		var frameNo = 0;			// The number of frames that have passed
+
+		const upgradeWidth = canvasWidth*0.25;
+		const upgradeHeight = canvasHeight;
 
 		// Function called to start the game and initialize variables
 		function startGame()
@@ -57,6 +69,9 @@
 
 			// Initialize game area, and begin the game-running loop
 			myGameArea.start();
+
+			//Initialize upgrade area
+			upgradeArea.start();
 		}
 
 		// Variable that contains all canvas elements
@@ -87,6 +102,26 @@
 
 				// Every 20ms, call the updateGameArea function
 				this.interval = setInterval(updateGameArea, 20);
+			},
+			clear : function() {
+				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			}
+		}
+
+		var upgradeArea =
+		{
+			// Create and initialize canvas
+			canvas : document.createElement("canvas"),
+			start : function() {
+				console.log(this.canvas);
+				this.canvas.width = upgradeWidth;
+				this.canvas.height = upgradeHeight;
+				this.canvas.setAttribute("id", "upgradeCanvas");
+				this.context = this.canvas.getContext("2d");
+
+				// Add the canvas to the start of html body
+				document.body.insertBefore(this.canvas, document.body.childNodes[1]);
+
 			},
 			clear : function() {
 				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
