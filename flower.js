@@ -6,7 +6,8 @@ function flower(x, y, image)
 	this.y = y;
 	this.image = image;
 
-	// Consider making the widths/heights proportional to honey at the start (right now the valid hover space is bigger than the drawing if the initial honey is less than max). This might be hard to fix
+	this.originalWidth = flowerWidth;
+	this.originalHeight = flowerHeight;
 	this.image.width = flowerWidth;
 	this.image.height = flowerHeight;
 
@@ -92,9 +93,9 @@ function flower(x, y, image)
 	this.update = function() {
 		ctx = myGameArea.context;
 		// Minimum width is 1/3 the flowerWidth, so flowers don't get too small
-		tempWidth = this.image.width * ((maxFlowerHoney/3 + this.honey/3) / maxFlowerHoney);
+		this.image.width = this.originalWidth * ((maxFlowerHoney/3 + this.honey/3) / maxFlowerHoney);
 		// Minimum height is half the flowerHeight, so flowers don't get too small
-		tempHeight = this.image.height * ((maxFlowerHoney/3 + this.honey/3) / maxFlowerHoney);
-		ctx.drawImage(this.image, this.x, this.y, tempWidth, tempHeight);
+		this.image.height = this.originalHeight * ((maxFlowerHoney/3 + this.honey/3) / maxFlowerHoney);
+		ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
 	}
 }

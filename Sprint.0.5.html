@@ -179,6 +179,7 @@
 			this.image.width = flowerWidth;
 			this.image.height = flowerHeight;
 			this.lifeSpan = 10;
+			this.honey = Math.floor(Math.random()*81) + 20;
 
 			this.getX = function() {
 				return this.x;
@@ -205,13 +206,19 @@
 			}
 
 			this.hit = function() {
+
 				scoreCount++;
 			}
 
 			this.age = function() {
 				this.lifeSpan--;
 				if (this.lifeSpan <= 0)
-					return true;
+				{
+					console.log("called");
+					console.log(flowers);
+					console.log(flowers.indexOf(self));
+					return false;
+				}
 				else
 					return false;
 			}

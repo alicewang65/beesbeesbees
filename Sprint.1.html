@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 		<title>Bees Bees Bees</title>
+		<link rel="shortcut icon" href="bee.png" type="image/x-icon"/> <!-- icon on browser tab-->
 
 		<style>
 			#myCanvas
@@ -21,16 +22,91 @@
 
 			}
 		</style>
+
+		<style>
+			body {font-family: Arial, Helvetica, sans-serif;}
+
+			/* The Modal (background) */
+			.modal {
+			    position: fixed; /* Stay in place */
+			    z-index: 1; /* Sit on top */
+			    padding-top: 100px; /* Location of the box */
+			    left: 0;
+			    top: 0;
+			    width: 100%; /* Full width */
+			    height: 100%; /* Full height */
+			    overflow: auto; /* Enable scroll if needed */
+			    background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
+			}
+
+			/* Modal Content */
+			.modal-content {
+			    background-color: #80dfff;
+			    margin: auto;
+			    padding: 20px;
+			    border: 2px solid #000000;
+			    width: 35%;
+			}
+
+			/* The Close Button */
+			.close {
+			    color: #00394d;
+			    float: right;
+			    font-size: 28px;
+			    font-weight: bold;
+			}
+
+			.close:hover,
+			.close:focus {
+			    color: #000;
+			    text-decoration: none;
+			    cursor: pointer;
+			}
+		</style>
 	</head>
 
 
 <body onload="startGame()">
+
 
 	<img id="bee_img" src="bee3.png" alt="Bee_Image" style="display : none;">
 	<img id="flower1_img" src="flower1.png" alt="flower1_Image" style="display : none;">
 	<img id="flower2_img" src="rose.png" alt="flower2_Image" style="display : none;">
 	<img id="flower3_img" src="tulip.png" alt="flower3_Image" style="display : none;">
 	<img id="rock_img" src="rock.png" alt="rock_Image" style="display : none;">
+
+	<!-- The Modal -->
+	<div id="myModal" class="modal">
+
+	 	<!-- Modal content -->
+	 	<div class="modal-content">
+	 
+	 	<span class="close">&times;</span>
+	    
+	    	<p> 
+				Welcome to Bees! Bees! Bees! <br><br>
+				Drag your cursor and bee around the screen to collect as much honey as possible from the flowers. Just watch out for rocks, they can decrease your score. The more honey you collect the more fun upgrades and twists will become available! <br><br>
+				Happy collecting! <br><br>
+				-The Bee Team 
+			</p>
+	  </div>
+
+	</div>
+
+	<script>
+		// Get the modal
+		var modal = document.getElementById('myModal');
+
+		// Get the <span> element that closes the modal
+		var span = document.getElementsByClassName("close")[0];
+
+		// When the user clicks on <span> (x), close the modal
+		span.onclick = function() {
+		    modal.style.display = "none";
+		}
+		
+	</script>
+
 
 	<script src="myBee.js"></script>
 	<script src="flower.js"></script>
@@ -50,8 +126,9 @@
 		var scoreCount = 0;	// The current score count
 		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
+
 		const canvasWidth = 950;	// Width of the canvas - 1210 originally
-		const canvasHeight = 710;	// Height of the canvas
+		const canvasHeight = 690;	// Height of the canvas - 710 originally
 		const beeSize = 50;			// The height/width of the bee
 		const rockSize = 50;		// The height/width of rocks
 		const flowerWidth = 70;		// The max width of the flower
@@ -172,7 +249,7 @@
 					randomY = Math.floor(Math.random() * (canvasHeight - flowerHeight));
 					randomImageId = Math.floor(Math.random() * 3) + 1;
 					flowerImage = new Image();
-					flowerImage.src = "flower1.png";
+					flowerImage.src = "flower" + randomImageId + ".png";
 
 					tempFlower = new flower(randomX, randomY, flowerImage);
 

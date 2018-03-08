@@ -4,7 +4,7 @@ var myBee =
 	start : function() {
 		// Gets the bee image from the html code
 		this.image = new Image();
-		this.image.src = "bee3.png";
+		this.image.src = "bee.png";
 		// These widths and heights look like a good size for the bee
 		this.image.width = beeSize;
 		this.image.height = beeSize;

@@ -8,6 +8,9 @@ function rock(x, y)
 	this.width = rockSize;
 	this.height = rockSize;
 
+	this.image = new Image();
+	this.image.src = "rock.png";
+
 	// Number of seconds before the rock deletes
 	this.lifeSpan = 30;
 
@@ -75,6 +78,6 @@ function rock(x, y)
 	this.update = function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = "#4d5259";
-		ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 	}
 }
