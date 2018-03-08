@@ -18,11 +18,6 @@
 
 <body onload="startGame()">
 
-	<img id="bee_img" src="bee3.png" alt="Bee_Image" style="display : none;">
-	<img id="flower1_img" src="flower1.png" alt="flower1_Image" style="display : none;">
-	<img id="flower2_img" src="rose.png" alt="flower2_Image" style="display : none;">
-	<img id="flower3_img" src="tulip.png" alt="flower3_Image" style="display : none;">
-
 	<script src="myBee.js"></script>
 	<script src="flower.js"></script>
 	<script src="rock.js"></script>
@@ -41,8 +36,8 @@
 		var scoreCount = 0;	// The current score count
 		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
-		const canvasWidth = 1210;	// Width of the canvas
-		const canvasHeight = 710;	// Height of the canvas
+		const canvasWidth = 1200;	// Width of the canvas
+		const canvasHeight = 690;	// Height of the canvas
 		const beeSize = 50;			// The height/width of the bee
 		const rockSize = 50;		// The height/width of rocks
 		const flowerWidth = 70;		// The max width of the flower
@@ -137,7 +132,7 @@
 					randomY = Math.floor(Math.random() * (canvasHeight - flowerHeight));
 					randomImageId = Math.floor(Math.random() * 3) + 1;
 					flowerImage = new Image();
-					flowerImage.src = "flower1.png";
+					flowerImage.src = "flower" + randomImageId + ".png";
 
 					tempFlower = new flower(randomX, randomY, flowerImage);
 
