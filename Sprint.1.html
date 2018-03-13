@@ -120,16 +120,16 @@
 		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
 
-		const canvasWidth = 950;	// Width of the canvas - 1210 originally
-		const canvasHeight = 690;	// Height of the canvas - 710 originally
+		var canvasWidth = window.innerWidth*0.75;	// Width of the canvas - 1210 originally
+		var canvasHeight = window.innerHeight*0.95;	// Height of the canvas - 710 originally
 		const beeSize = 50;			// The height/width of the bee
 		const rockSize = 50;		// The height/width of rocks
 		const flowerWidth = 70;		// The max width of the flower
 		const flowerHeight = 90;	// The max height of the flower
 		var frameNo = 0;			// The number of frames that have passed
 
-		const upgradeWidth = canvasWidth*0.25;
-		const upgradeHeight = canvasHeight;
+		var upgradeWidth = canvasWidth*0.3;
+		var upgradeHeight = canvasHeight;
 
 		// Function called to start the game and initialize variables
 		function startGame()
@@ -201,6 +201,11 @@
 		// Reanimates the canvas, checks if a bee is hovering over a flower, and update the score
 		function updateGameArea()
 		{
+			// myGameArea.canvas.width = window.innerWidth*0.75;	// Width of the canvas - 1210 originally
+			// myGameArea.canvas.height = window.innerHeight*0.95;
+			// upgradeArea.canvas.width = canvasWidth*0.3;
+			// upgradeArea.canvas.height = canvasHeight;
+
 			myGameArea.clear();
 			frameNo++;
 
