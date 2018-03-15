@@ -120,17 +120,20 @@
 		var scoreCount = 0;	// The current score count
 		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
-
-		const canvasWidth = 950;	// Width of the canvas - 1210 originally
-		const canvasHeight = 690;	// Height of the canvas - 710 originally
+		var canvasWidth = window.innerWidth*0.75;	// Width of the canvas - 1210 originally
+		var canvasHeight = window.innerHeight*0.95;	// Height of the canvas - 710 originally
 		const beeSize = 50;			// The height/width of the bee
 		const rockSize = 50;		// The height/width of rocks
 		const flowerWidth = 70;		// The max width of the flower
 		const flowerHeight = 90;	// The max height of the flower
 		var frameNo = 0;			// The number of frames that have passed
 
-		const upgradeWidth = canvasWidth*0.25;
-		const upgradeHeight = canvasHeight;
+		//sets the x and y positions of the score box
+		var scoreBoxY = canvasHeight*(.05);
+		var scoreBoxX = canvasWidth*(.8);
+
+		var upgradeWidth = canvasWidth*0.3;
+		var upgradeHeight = canvasHeight;
 
 		// Function called to start the game and initialize variables
 		function startGame()
@@ -143,6 +146,9 @@
 
 			//Initialize upgrade area
 			upgradeArea.start();
+
+			//add an event listener to resize canvases if window is resized
+			window.addEventListener("resize", resizeCanvas, false);
 		}
 
 		// Variable that contains all canvas elements
@@ -157,7 +163,7 @@
 				this.context = this.canvas.getContext("2d");
 
 				// Creates the score textBox object. These x and y positions just look good
-				scoreBox = new textBox(30, "Arial", canvasWidth*(.8), canvasHeight*(.05), "Score: 0", "#000000", false);
+				scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "Score: 0", "#000000", false);
 
 				// Add flower object(s) to the flowers array
 				obstacleChange();
@@ -173,6 +179,7 @@
 
 				// Every 20ms, call the updateGameArea function
 				this.interval = setInterval(updateGameArea, 20);
+
 			},
 			clear : function() {
 				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -198,6 +205,30 @@
 			clear : function() {
 				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 			}
+		}
+
+		//resizes the canvas if the window is resized
+		function resizeCanvas()
+		{
+			//updates the width and height of the canvases
+			canvasWidth = window.innerWidth*0.75;
+			canvasHeight = window.innerHeight*0.95;
+			upgradeWidth = canvasWidth*0.3;
+			upgradeHeight = canvasHeight;
+			
+			//update the x and y position of the score box
+			scoreBoxX = canvasWidth*(.8);
+			socreBoxY = canvasHeight*(.05);
+
+			//changes the actual canvases' widths and heights
+			myGameArea.canvas.width = canvasWidth;
+			myGameArea.canvas.height = canvasHeight;
+			upgradeArea.canvas.width = upgradeWidth;
+			upgradeArea.canvas.height = upgradeHeight;
+
+			//changes the score box object's positions
+			scoreBox.setX(scoreBoxX);
+			scoreBox.setY(scoreBoxY);
 		}
 
 		// Reanimates the canvas, checks if a bee is hovering over a flower, and update the score
