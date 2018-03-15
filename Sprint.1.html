@@ -105,6 +105,7 @@
 	<script src="flower.js"></script>
 	<script src="rock.js"></script>
 	<script src="textBox.js"></script>
+	<script src="upgrade.js"></script>
 
 	<script>
 		var myBee;		// The bee
@@ -183,11 +184,12 @@
 			// Create and initialize canvas
 			canvas : document.createElement("canvas"),
 			start : function() {
-				console.log(this.canvas);
 				this.canvas.width = upgradeWidth;
 				this.canvas.height = upgradeHeight;
 				this.canvas.setAttribute("id", "upgradeCanvas");
 				this.context = this.canvas.getContext("2d");
+
+				testUpgrade = new upgrade();
 
 				// Add the canvas to the start of html body
 				document.body.insertBefore(this.canvas, document.body.childNodes[1]);
@@ -228,6 +230,8 @@
 
 			scoreBox.update();
 			myBee.draw();
+
+			testUpgrade.draw();
 		}
 
 		// Deletes/Creates flowers/rocks at a random new position at random intervals
@@ -253,6 +257,8 @@
 						{
 							// If the flower is in contact with something, we have to check the whole array again with the new position
 							rr = 0;
+							tempFlower.setX(Math.floor(Math.random() * (canvasWidth - flowerWidth)));
+							tempFlower.setY(Math.floor(Math.random() * (canvasHeight - flowerHeight)));
 						}
 					}
 
@@ -275,6 +281,8 @@
 					{
 						// If the rock is in contact with something, we have to check the whole array again with the new position
 						oo = 0;
+						newRock.setX(Math.floor(Math.random() * (canvasWidth - rockSize)));
+						newRock.setY(Math.floor(Math.random() * (canvasHeight - rockSize)));
 					}
 				}
 
