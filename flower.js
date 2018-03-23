@@ -16,8 +16,8 @@ function flower(x, y, image)
 	// Minimum honey is 30% of maxFlowerHoney, maximum honey is maxFlowerHoney
 	this.honey = Math.floor(Math.random()*(0.71*maxFlowerHoney)) + (.3*maxFlowerHoney);
 	
-	// How many frames the bee has been hovering over this flower
-	this.hoverCount = 0;
+	// How many frames the bee has been hovering over this flower. Starts at 49 so that a "+10" will pop up right away
+	this.hoverCount = 49;
 
 	this.getX = function() {
 		return this.x;
@@ -46,14 +46,18 @@ function flower(x, y, image)
 	// This function is called when the bee is in contact with the flower
 	this.hit = function() {
 		this.hoverCount++;
+
+		if (this.hoverCount%(collectionSpeed/10) == 0)
+		{
+			this.honey -= hph/10;
+		}
 		
 		// We can add upgrades that change how long it takes to harvest honey, right now it takes 1 second to get 10 honey
-		if (this.hoverCount%50 == 0)
+		if (this.hoverCount%collectionSpeed == 0)
 		{
-			scoreCount += 10;
-			this.honey -= 10;
+			scoreCount += hph;
 			// Create a "+10" above the flower
-			temp = new textBox(30, "Arial", this.x, this.y-30, "+10", "#000000", true);
+			temp = new textBox(30, "Arial", this.x, this.y-30, "+" + hph, "#000000", true);
 			allObjects.push(temp);
 
 			// Adjust for the position change that happens when width/height change
@@ -93,9 +97,9 @@ function flower(x, y, image)
 	this.update = function() {
 		ctx = myGameArea.context;
 		// Minimum width is 1/3 the flowerWidth, so flowers don't get too small
-		this.image.width = this.originalWidth * ((maxFlowerHoney/3 + this.honey/3) / maxFlowerHoney);
+		this.image.width = 2 * this.originalWidth * (this.honey / maxFlowerHoney)/3 + this.originalWidth/3;
 		// Minimum height is half the flowerHeight, so flowers don't get too small
-		this.image.height = this.originalHeight * ((maxFlowerHoney/3 + this.honey/3) / maxFlowerHoney);
+		this.image.height = 2 * this.originalHeight * (this.honey / maxFlowerHoney)/3 + this.originalHeight/3;
 		ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
 	}
 }
