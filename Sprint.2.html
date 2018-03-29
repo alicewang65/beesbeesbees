@@ -61,7 +61,13 @@
 		var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 		var collectionSpeed = 20;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 
+		var upgrades = [];	// The array of upgrades on screen
+
+		var hph = 50;	// Honey Per Hover (used for flowers)
+		var hps = 0;	// Honey per second (auto-collected)
+
 		var scoreBox;	// The score textBox
+		var autoCollect; // The user's honey per second
 		var scoreCount = 0;	// The current score count
 		var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
@@ -73,12 +79,9 @@
 		const flowerHeight = 90;	// The max height of the flower
 		var frameNo = 0;			// The number of frames that have passed
 
-		var hph = 50;	// Honey Per Hover (used for flowers)
-		var hps = 0;
-
 		//sets the x and y positions of the score box
 		var scoreBoxY = canvasHeight*(.05);
-		var scoreBoxX = canvasWidth*(.8);
+		var scoreBoxX = canvasWidth*(.05);
 
 		var upgradeCanvasWidth = canvasWidth*0.29;
 		var upgradeCanvasHeight = canvasHeight;
@@ -112,6 +115,7 @@
 
 				// Creates the score textBox object
 				scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "Score: 0", "#000000", false);
+				autoCollect = new textBox(20, "Arial", scoreBoxX, scoreBoxY + scoreBox.getHeight(), "Hps: 0", "#000000", false);
 
 				// Add flower object(s) to the flowers array
 				obstacleChange();
@@ -119,6 +123,7 @@
 				// Draw the bee and scoreBox for the initial frame
 				myBee.draw();
 				scoreBox.update();
+				autoCollect.update();
 
 				// When the mouse is moved, call mouseMove function (makes bee move)
 				this.canvas.addEventListener("mousemove", function(){mouseMove()});
@@ -148,29 +153,16 @@
 				this.canvas.setAttribute("id", "upgradeCanvas");
 				this.context = this.canvas.getContext("2d");
 
-				var testUpgrade = document.createElement("div");
-				testUpgrade.setAttribute("class", "upgrade");
-
-				testUpgrade.addEventListener("mouseover", function(){testUpgrade.style.backgroundColor = "gray"});
-				testUpgrade.addEventListener("mouseout", function(){testUpgrade.style.backgroundColor = "white"});
-				
-
-
-				testUpgrade.addEventListener("click", function()
-					{
-						hps += 1;
-					}
-				);
-
-				testUpgrade.style.width = upgradeCanvasWidth + "px";
-				testUpgrade.style.height = "100px";
-				testUpgrade.innerHTML = "Upgrade";
-
-				// Add the canvas to the start of html body
+				// Add the canvas to the start of html body, after the game canvas
 				var mainCanvas = document.getElementById("myCanvas");
 				mainCanvas.parentNode.insertBefore(this.container, mainCanvas.nextSibling);
 				this.container.appendChild(this.canvas);
-				this.container.appendChild(testUpgrade);
+
+				makeUpgrade("upgrade1", 10, 1);
+				makeUpgrade("upgrade2", 15, 2);
+				makeUpgrade("upgrade3", 50, 5);
+				makeUpgrade("upgrade4", 100, 10);
+				makeUpgrade("upgrade5", 500, 100);
 			},
 			clear : function() {
 				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -187,7 +179,7 @@
 			upgradeHeight = canvasHeight;
 			
 			//update the x and y position of the score box
-			scoreBoxX = canvasWidth*(.8);
+			scoreBoxX = canvasWidth*(.05);
 			socreBoxY = canvasHeight*(.05);
 
 			//changes the actual canvases' widths and heights
@@ -206,18 +198,19 @@
 		{
 			myGameArea.clear();
 			frameNo++;
+			scoreCount += hps/50;
 
 			// Every 50 frames (or one second), there is a chance of flowers/rocks moving/deleting/creating
 			if (frameNo % 50 == 0)
 			{
-				scoreCount += hps;
 				obstacleChange();
 			}
 
-			checkScore();
+			scoreString = simplifyNumber(scoreCount);
 
 			// Update the score for the game
 			scoreBox.setText("SCORE: " + scoreString);
+			autoCollect.setText("Hps: " + simplifyNumber(hps));
 
 			// Checks all objects if they are in contact with the bee and updates them
 			for (ii = 0; ii < allObjects.length; ii++)
@@ -231,6 +224,7 @@
 			}
 
 			scoreBox.update();
+			autoCollect.update();
 			myBee.draw();
 		}
 
@@ -379,80 +373,126 @@
 
 		}
 
-		function checkScore()
+		// Makes an upgrade object
+		function makeUpgrade(name, startCost, honey)
 		{
-			if (scoreCount < 0)
+			var upgrade = document.createElement("div");
+			upgrade.setAttribute("class", "upgrade");
+			upgrade.cost = startCost;
+			upgrade.costString = upgrade.cost.toString();
+			upgrade.count = 0;
+			upgrade.name = name;
+			upgrade.honey = honey;
+
+			upgrade.addEventListener("mouseover", function(){upgrade.style.backgroundColor = "gray"});
+			upgrade.addEventListener("mouseout", function(){upgrade.style.backgroundColor = "white"});
+
+			upgrade.addEventListener("click", function()
+				{
+					buyUpgrade(upgrade);
+				}
+			);
+
+			upgrade.style.width = (upgradeCanvasWidth-4) + "px"; // This accounts for 2px border... magic number used
+			upgrade.style.height = "100px"; // Magic number, fix this
+			upgrade.style.top = 100*upgrades.length + "px";
+
+			upgrade.innerHTML = upgrade.name + "<br> <p class = \"upgradeCost\"> Cost: " + upgrade.costString + "</p>";
+
+			upgradeArea.container.appendChild(upgrade);
+			upgrades.push(upgrade);
+		}
+
+		// Called when the user clicks on the test upgrade. Checks if the user can afford the upgrade, then buys it if they can.
+		function buyUpgrade(upgrade)
+		{
+			if (scoreCount >= upgrade.cost)
 			{
-				scoreCount = 0;
-				scoreString = scoreCount;
+				scoreCount -= upgrade.cost;
+				hps += upgrade.honey;
+				upgrade.cost = upgrade.cost * 1.25;
+				upgrade.costString = simplifyNumber(upgrade.cost);
+				upgrade.count += 1;
+				upgrade.innerHTML = upgrade.name + "<br> <p class = \"upgradeCost\"> Cost: " + upgrade.costString + "</p> <p class = \"upgradeCount\"> " + upgrade.count + "</p>"
+			}
+		}
+
+		// Takes in a number and returns a shortened string version
+		function simplifyNumber(number)
+		{
+			if (number < 0)
+			{
+				number = 0;
+				return "0";
 			}
 
-			else if (scoreCount >= 0 && scoreCount < 1000)
+			else if (number >= 0 && number < 1000)
 			{
-				scoreString = scoreCount.toString();
+				return number.toFixed();
 			}
 
-			else if (scoreCount >= 1000 && scoreCount < 1000000)
+			else if (number >= 1000 && number < 1000000)
 			{
-				scoreString = scoreCount.toString();
-				strIndex = scoreString.length - 3; // This is the index where the comma will go
-				scoreString = scoreString.substring(0, strIndex) + "," + scoreString.substring(strIndex);
+				temp = number.toFixed();
+				strIndex = temp.length - 3; // This is the index where the comma will go
+				return temp.substring(0, strIndex) + "," + temp.substring(strIndex);
 			}
 
-			else if (scoreCount >= 1000000 && scoreCount < 1000000000)
+			else if (number >= 1000000 && number < 1000000000)
 			{
-				scoreString = (scoreCount/1000000).toFixed(3) + " Million";
+				return (number/1000000).toFixed(3) + " Million";
 			}
 
-			else if (scoreCount >= 1000000000 && scoreCount < 1000000000000)
+			else if (number >= 1000000000 && number < 1000000000000)
 			{
-				scoreString = (scoreCount/1000000000).toFixed(3) + " Billion";
+				return (number/1000000000).toFixed(3) + " Billion";
 			}
 
-			else if (scoreCount >= 1000000000000 && scoreCount < 1000000000000000)
+			else if (number >= 1000000000000 && number < 1000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000).toFixed(3) + " Trillion";
+				return (number/1000000000000).toFixed(3) + " Trillion";
 			}
 
-			else if (scoreCount >= 1000000000000000 && scoreCount < 1000000000000000000)
+			else if (number >= 1000000000000000 && number < 1000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000).toFixed(3) + " Quadrillion";
+				return (number/1000000000000000).toFixed(3) + " Quadrillion";
 			}
 
-			else if (scoreCount >= 1000000000000000000 && scoreCount < 1000000000000000000000)
+			else if (number >= 1000000000000000000 && number < 1000000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000000).toFixed(3) + " Pentillion";
+				return (number/1000000000000000000).toFixed(3) + " Pentillion";
 			}
 
-			else if (scoreCount >= 1000000000000000000000 && scoreCount < 1000000000000000000000000)
+			else if (number >= 1000000000000000000000 && number < 1000000000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000000000).toFixed(3) + " Hexillion";
+				return (number/1000000000000000000000).toFixed(3) + " Hexillion";
 			}
 
-			else if (scoreCount >= 1000000000000000000000000 && scoreCount < 1000000000000000000000000000)
+			else if (number >= 1000000000000000000000000 && number < 1000000000000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000000000000).toFixed(3) + " Septillion";
+				return (number/1000000000000000000000000).toFixed(3) + " Septillion";
 			}
 
-			else if (scoreCount >= 1000000000000000000000000000 && scoreCount < 1000000000000000000000000000000)
+			else if (number >= 1000000000000000000000000000 && number < 1000000000000000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000000000000000).toFixed(3) + " Octillion";
+				return (number/1000000000000000000000000000).toFixed(3) + " Octillion";
 			}
 
-			else if (scoreCount >= 1000000000000000000000000000000 && scoreCount < 1000000000000000000000000000000000)
+			else if (number >= 1000000000000000000000000000000 && number < 1000000000000000000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000000000000000000).toFixed(3) + " Nonillion";
+				return (number/1000000000000000000000000000000).toFixed(3) + " Nonillion";
 			}
 
-			else if (scoreCount >= 1000000000000000000000000000000000 && scoreCount < 1000000000000000000000000000000000000)
+			else if (number >= 1000000000000000000000000000000000 && number < 1000000000000000000000000000000000000)
 			{
-				scoreString = (scoreCount/1000000000000000000000000000000000).toFixed(3) + " Decillion";
+				return (number/1000000000000000000000000000000000).toFixed(3) + " Decillion";
 			}
 
 			else
 			{
-				scoreString = "Infinity";
+				return "Infinity";
 			}
+			
 		}
 
 	</script>
