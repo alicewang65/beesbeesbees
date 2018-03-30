@@ -65,8 +65,7 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 
 	// Makes animated text slowly fade to invisible
 	this.adjustTransparency = function() {
-		this.transparency -= .05;
-		//console.log(this.y);
+		this.transparency -= .02;
 	}
 
 	// Draws the textbox to the canvas
@@ -80,6 +79,7 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 		if (this.animate)
 		{
 			this.adjustTransparency();
+			this.y--;
 		}
 
 		// If the text is invisible or invalid, delete the text box and don't draw
