@@ -70,24 +70,32 @@ body
 {
 	display: inline-block;
 	position: relative;
+	overflow: scroll;
 }
 
 .upgrade
 {
 	position: absolute;
 	background-color: white;
-	border: 2px solid #000000; /* The width of the upgrade is 4 px less to account for the border */
+	border: 4px solid #262626; /* The width of the upgrade is 4 px less to account for the border */
 	font-size: 40px;
 	text-align: left;
 	cursor: pointer;
 
+	border-style: outset;
+
 	/* This code makes the upgrade text unselectable/unhighlightable */
 	-webkit-touch-callout: none; /* iOS Safari */
-		-webkit-user-select: none; /* Safari */
-		-khtml-user-select: none; /* Konqueror HTML */
-		-moz-user-select: none; /* Firefox */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none;
+}
+
+.upgrade:hover
+{
+	border-style: inset;
 }
 
 .upgradeCost
