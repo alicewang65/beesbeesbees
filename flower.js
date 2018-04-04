@@ -8,6 +8,8 @@ function flower(x, y, image)
 
 	this.originalWidth = flowerWidth;
 	this.originalHeight = flowerHeight;
+	this.originalX = this.x;
+	this.originalY = this.y;
 	this.image.width = flowerWidth;
 	this.image.height = flowerHeight;
 
@@ -57,13 +59,8 @@ function flower(x, y, image)
 		{
 			scoreCount += hph;
 			// Create a "+10" above the flower
-			temp = new textBox(30, "Arial", this.x, this.y-30, "+" + hph, "#000000", true);
+			temp = new textBox(30, "Arial", this.x, this.y-30, "+" + simplifyNumber(hph), "#000000", true);
 			allObjects.push(temp);
-
-			// Adjust for the position change that happens when width/height change
-			this.x++;
-			this.y++;
-
 		}
 
 		// If the flower has no more honey, it dies
@@ -93,13 +90,22 @@ function flower(x, y, image)
 		allObjects.splice(index, 1);
 	}
 
-	// Draw the flower
+	// Draw the flower. Shrink according to honey in flower, shift to keep the flower centered
 	this.update = function() {
 		ctx = myGameArea.context;
+
+		// Shrink flower
+
 		// Minimum width is 1/3 the flowerWidth, so flowers don't get too small
 		this.image.width = 2 * this.originalWidth * (this.honey / maxFlowerHoney)/3 + this.originalWidth/3;
 		// Minimum height is half the flowerHeight, so flowers don't get too small
 		this.image.height = 2 * this.originalHeight * (this.honey / maxFlowerHoney)/3 + this.originalHeight/3;
+
+		// Shift flower
+
+		this.x = this.originalX + (this.originalWidth - this.image.width)/2;
+		this.y = this.originalY + (this.originalHeight - this.image.height)/2;
+
 		ctx.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
 	}
 }

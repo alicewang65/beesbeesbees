@@ -7,11 +7,11 @@ var flowers = [];	// The array of flowers, used for creating/deleting flowers
 var rocks = [];
 var maxFlowers = 10; // The maximum amount of flowers that can appear on the screen at once
 var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
-var collectionSpeed = 20;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
+var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 
 var upgrades = [];	// The array of upgrades on screen
 
-var hph = 50;	// Honey Per Hover (used for flowers)
+var hph = maxFlowerHoney/3;	// Honey Per Hover (used for flowers)
 var hps = 0;	// Honey per second (auto-collected)
 
 var scoreBox;	// The score textBox
@@ -57,9 +57,14 @@ function startGame()
 // Variable that contains all canvas elements
 var myGameArea = 
 {
+	// Create container for game area elements
+	container : document.createElement("div"),
+
 	// Create and initialize canvas
 	canvas : document.createElement("canvas"),
 	start : function() {
+		this.container.setAttribute("id", "gameContainer");
+
 		this.canvas.width = canvasWidth;
 		this.canvas.height = canvasHeight;
 		this.canvas.setAttribute("id", "myCanvas");
@@ -80,7 +85,8 @@ var myGameArea =
 		// When the mouse is moved, call mouseMove function (makes bee move)
 		this.canvas.addEventListener("mousemove", function(){mouseMove()});
 		// Add the canvas to the start of html body
-		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+		document.body.insertBefore(this.container, document.body.childNodes[0]);
+		this.container.appendChild(this.canvas);
 
 		// Every 20ms, call the updateGameArea function
 		this.interval = setInterval(updateGameArea, 20);
@@ -107,15 +113,15 @@ var upgradeArea =
 		this.context = this.canvas.getContext("2d");
 
 		// Add the canvas to the start of html body, after the game canvas
-		var mainCanvas = document.getElementById("myCanvas");
+		var mainCanvas = document.getElementById("gameContainer");
 		mainCanvas.parentNode.insertBefore(this.container, mainCanvas.nextSibling);
 		this.container.appendChild(this.canvas);
 
-		makeUpgrade("upgrade1", 10, 1);
-		makeUpgrade("upgrade2", 15, 2);
-		makeUpgrade("upgrade3", 50, 5);
-		makeUpgrade("upgrade4", 100, 10);
-		makeUpgrade("upgrade5", 500, 100);
+		makeUpgrade("Worker Bee", 10, 1);
+		makeUpgrade("Queen Bee", 15, 2);
+		makeUpgrade("Hive", 50, 5);
+		makeUpgrade("Honey Farm", 100, 10);
+		makeUpgrade("Nectar CEO", 500, 100);
 	},
 	clear : function() {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
