@@ -104,3 +104,11 @@ body
 	right: 0px;
 	top: 0px;
 }
+
+.honeyPot
+{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	cursor: pointer;
+}

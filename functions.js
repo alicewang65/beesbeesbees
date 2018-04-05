@@ -10,6 +10,7 @@ var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 
 var upgrades = [];	// The array of upgrades on screen
+var honeyPotEffects = ["Boost", "Hyper"]; //"Flower Power", "Swarm"
 
 var hph = maxFlowerHoney/3;	// Honey Per Hover (used for flowers)
 var hps = 0;	// Honey per second (auto-collected)
@@ -18,6 +19,7 @@ var scoreBox;	// The score textBox
 var autoCollect; // The user's honey per second
 var scoreCount = 0;	// The current score count
 var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
+var multiplier = 1;
 
 var canvasWidth = window.innerWidth*0.75;	// Width of the canvas - 1210 originally
 var canvasHeight = window.innerHeight*0.95;	// Height of the canvas - 710 originally
@@ -157,7 +159,7 @@ function updateGameArea()
 {
 	myGameArea.clear();
 	frameNo++;
-	scoreCount += hps/50;
+	scoreCount += (hps*multiplier)/50;
 
 	// Every 50 frames (or one second), there is a chance of flowers/rocks moving/deleting/creating
 	if (frameNo % 50 == 0)
@@ -165,11 +167,17 @@ function updateGameArea()
 		obstacleChange();
 	}
 
+	// Every 1500 frames (or 30 seconds), a honey pot will spawn
+	if (frameNo % 250 == 0)
+	{
+		honeyPotSpawn();
+	}
+
 	scoreString = simplifyNumber(scoreCount);
 
 	// Update the score for the game
 	scoreBox.setText("SCORE: " + scoreString);
-	autoCollect.setText("Hps: " + simplifyNumber(hps));
+	autoCollect.setText("Hps: " + simplifyNumber(hps*multiplier));
 
 	// Checks all objects if they are in contact with the bee and updates them
 	for (ii = 0; ii < allObjects.length; ii++)
@@ -180,6 +188,22 @@ function updateGameArea()
 		}
 
 		allObjects[ii].update();
+	}
+
+	for (let upgrade of upgrades)
+	{
+		if (scoreCount >= upgrade.cost)
+		{
+			var color = "white";
+		}
+
+		else
+			var color = "gray";
+
+		if (!upgrade.isHovering || scoreCount < upgrade.cost)
+		{
+			upgrade.style.backgroundColor = color;
+		}
 	}
 
 	scoreBox.update();
@@ -341,10 +365,22 @@ function makeUpgrade(name, startCost, honey)
 	upgrade.costString = upgrade.cost.toString();
 	upgrade.count = 0;
 	upgrade.name = name;
+	upgrade.isHovering = false;
 	upgrade.honey = honey;
 
-	upgrade.addEventListener("mouseover", function(){upgrade.style.backgroundColor = "gray"});
-	upgrade.addEventListener("mouseout", function(){upgrade.style.backgroundColor = "white"});
+	upgrade.addEventListener("mouseover", function()
+		{
+			if (scoreCount >= upgrade.cost)
+			{
+				upgrade.style.backgroundColor = "orange";
+			}
+			upgrade.isHovering = true;
+		});
+
+	upgrade.addEventListener("mouseout", function()
+		{
+			upgrade.isHovering = false;
+		});
 
 	upgrade.addEventListener("click", function()
 		{
@@ -374,6 +410,61 @@ function buyUpgrade(upgrade)
 		upgrade.count += 1;
 		upgrade.innerHTML = upgrade.name + "<br> <p class = \"upgradeCost\"> Cost: " + upgrade.costString + "</p> <p class = \"upgradeCount\"> " + upgrade.count + "</p>"
 	}
+}
+
+// Spawns a honey pot
+function honeyPotSpawn()
+{
+	honeyPot = document.createElement("div");
+	honeyPot.setAttribute("class", "honeyPot");
+
+	honeyPot.width = 100; // MAGIC NUMBER, fix this
+	honeyPot.height = 100; // MAGIC NUMBER, fix this
+	honeyPot.x = Math.floor(Math.random()*(canvasWidth - 100)); // MAGIC NUMBER, fix this
+	honeyPot.y = Math.floor(Math.random()*(canvasHeight - 100)); // MAGIC NUMBER, fix this
+	honeyPot.style.width = honeyPot.width + "px";
+	honeyPot.style.height = honeyPot.height + "px";
+	honeyPot.style.left = honeyPot.x + "px";
+	honeyPot.style.top = honeyPot.y + "px";
+	honeyPot.addEventListener("click", function(){honeyPotClick(honeyPot)});
+
+	honeyPotImg = document.createElement("IMG");
+	honeyPotImg.setAttribute("src", "honey pot.png");
+	honeyPotImg.style.width = "100px"; // MAGIC NUMBER, fix this
+	honeyPotImg.style.height = "100px"; // MAGIC NUMBER, fix this
+
+	index = Math.floor(Math.random()*honeyPotEffects.length);
+	honeyPot.effect = honeyPotEffects[index];
+
+	gameContainer.appendChild(honeyPot);
+	honeyPot.appendChild(honeyPotImg);
+
+	honeyPot.delete = setTimeout(function(){honeyPot.parentNode.removeChild(honeyPot)} , 3000);
+}
+
+function honeyPotClick(honeyPot)
+{
+	console.log(honeyPot.effect);
+	// Add a boost of honey equal 10 + to 1 minute of hps
+	if (honeyPot.effect == "Boost")
+	{
+		var boost = (10 + hps*multiplier*60);
+		scoreCount += boost;
+		temp = new textBox(30, "Arial", honeyPot.x, honeyPot.y, "Boost! +" + simplifyNumber(boost), "#000000", true);
+	}
+
+	// Boost hps by 10x for 10 seconds
+	else if (honeyPot.effect == "Hyper")
+	{
+		multiplier *= 10;
+		setTimeout(function(){multiplier /= 10} , 10000);
+		temp = new textBox(30, "Arial", honeyPot.x, honeyPot.y, "Hyper! x10 Production", "#000000", true);
+	}
+
+	honeyPot.parentNode.removeChild(honeyPot);
+	allObjects.push(temp);
+	clearTimeout(honeyPot.delete);
+
 }
 
 // Takes in a number and returns a shortened string version
