@@ -152,6 +152,13 @@ function resizeCanvas()
 	//changes the score box object's positions
 	scoreBox.setX(scoreBoxX);
 	scoreBox.setY(scoreBoxY);
+
+	//resizes the upgrades
+	for (var ii = 0; ii < upgrades.length; ii++)
+	{
+		upgrades[ii].style.width = (upgradeWidth-8) + "px";
+	}
+
 }
 
 // Reanimates the canvas, checks if a bee is hovering over a flower, and update the score
@@ -372,7 +379,7 @@ function makeUpgrade(name, startCost, honey)
 		{
 			if (scoreCount >= upgrade.cost)
 			{
-				upgrade.style.backgroundColor = "orange";
+				upgrade.style.backgroundColor = "#d9d9d9";
 			}
 			upgrade.isHovering = true;
 		});
@@ -388,9 +395,9 @@ function makeUpgrade(name, startCost, honey)
 		}
 	);
 
-	upgrade.style.width = (upgradeCanvasWidth-4) + "px"; // This accounts for 2px border... magic number used
+	upgrade.style.width = (upgradeCanvasWidth-8) + "px"; // This accounts for 2px border... magic number used
 	upgrade.style.height = "100px"; // Magic number, fix this
-	upgrade.style.top = 100*upgrades.length + "px";
+	upgrade.style.top = 108*upgrades.length + "px";
 
 	upgrade.innerHTML = upgrade.name + "<br> <p class = \"upgradeCost\"> Cost: " + upgrade.costString + "</p>";
 
