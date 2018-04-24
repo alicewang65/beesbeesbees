@@ -5,7 +5,7 @@ var allObjects = []; // The array of every object that needs to be drawn
 
 var flowers = [];	// The array of flowers, used for creating/deleting flowers
 var rocks = [];
-var maxFlowers = 10; // The maximum amount of flowers that can appear on the screen at once
+var maxFlowers = 100; // The maximum amount of flowers that can appear on the screen at once
 var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 
@@ -27,13 +27,14 @@ const beeSize = 50;			// The height/width of the bee
 const rockSize = 50;		// The height/width of rocks
 const flowerWidth = 70;		// The max width of the flower
 const flowerHeight = 90;	// The max height of the flower
+const honeyPotSize = 100;	// The height and width of a honey pot
 var frameNo = 0;			// The number of frames that have passed
 
 //sets the x and y positions of the score box
 var scoreBoxY = canvasHeight*(.05);
 var scoreBoxX = canvasWidth*(.05);
 
-var upgradeCanvasWidth = canvasWidth*0.29;
+var upgradeCanvasWidth = canvasWidth*0.28;
 var upgradeCanvasHeight = canvasHeight;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +74,7 @@ var myGameArea =
 		this.context = this.canvas.getContext("2d");
 
 		// Creates the score textBox object
-		scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "Score: 0", "#000000", false);
+		scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "SCORE: 0", "#000000", false);
 		autoCollect = new textBox(20, "Arial", scoreBoxX, scoreBoxY + scoreBox.getHeight(), "Hps: 0", "#000000", false);
 
 		// Add flower object(s) to the flowers array
@@ -119,11 +120,11 @@ var upgradeArea =
 		mainCanvas.parentNode.insertBefore(this.container, mainCanvas.nextSibling);
 		this.container.appendChild(this.canvas);
 
-		makeUpgrade("Worker Bee", 10, 1);
-		makeUpgrade("Queen Bee", 15, 2);
-		makeUpgrade("Hive", 50, 5);
-		makeUpgrade("Honey Farm", 100, 10);
-		makeUpgrade("Nectar CEO", 500, 100);
+		new upgrade("Worker Bee", 10, 1);
+		new upgrade("Queen Bee", 15, 2);
+		new upgrade("Hive", 50, 5);
+		new upgrade("Honey Farm", 100, 10);
+		new upgrade("Nectar CEO", 500, 100);
 	},
 	clear : function() {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -154,9 +155,9 @@ function resizeCanvas()
 	scoreBox.setY(scoreBoxY);
 
 	//resizes the upgrades
-	for (var ii = 0; ii < upgrades.length; ii++)
+	for (let instance of upgrades)
 	{
-		upgrades[ii].style.width = (upgradeWidth-8) + "px";
+		instance.node.style.width = (upgradeWidth-8) + "px";
 	}
 
 }
@@ -177,7 +178,9 @@ function updateGameArea()
 	// Every 1500 frames (or 30 seconds), a honey pot will spawn
 	if (frameNo % 250 == 0)
 	{
-		honeyPotSpawn();
+		hp = new honeyPot();
+		avoid(hp, scoreBox);
+		avoid(hp, autoCollect);
 	}
 
 	scoreString = simplifyNumber(scoreCount);
@@ -187,29 +190,30 @@ function updateGameArea()
 	autoCollect.setText("Hps: " + simplifyNumber(hps*multiplier));
 
 	// Checks all objects if they are in contact with the bee and updates them
-	for (ii = 0; ii < allObjects.length; ii++)
+	for (let object of allObjects)
 	{
-		if (crash(myBee, allObjects[ii]))
+		if (crash(myBee, object))
 		{
-			allObjects[ii].hit();
+			object.hit();
 		}
 
-		allObjects[ii].update();
+		object.update();
 	}
 
-	for (let upgrade of upgrades)
+	// Changes color of upgrade background depending on if it is affordable/hovered over
+	for (let instance of upgrades)
 	{
-		if (scoreCount >= upgrade.cost)
+		if (scoreCount >= instance.cost)
 		{
 			var color = "white";
 		}
 
 		else
-			var color = "gray";
+			var color = "#ff8080";
 
-		if (!upgrade.isHovering || scoreCount < upgrade.cost)
+		if (!instance.isHovering || scoreCount < instance.cost)
 		{
-			upgrade.style.backgroundColor = color;
+			instance.node.style.backgroundColor = color;
 		}
 	}
 
@@ -234,17 +238,8 @@ function obstacleChange()
 
 			tempFlower = new flower(randomX, randomY, flowerImage);
 
-			// Make sure the new flower isn't in contact with any rocks or the scoreBox
-			for (rr = 0; rr < rocks.length; rr++)
-			{
-				if (!avoid(tempFlower, rocks[rr]) || !avoid(tempFlower, scoreBox))
-				{
-					// If the flower is in contact with something, we have to check the whole array again with the new position
-					rr = 0;
-					tempFlower.setX(Math.floor(Math.random() * (canvasWidth - flowerWidth)));
-					tempFlower.setY(Math.floor(Math.random() * (canvasHeight - flowerHeight)));
-				}
-			}
+			avoid(tempFlower, scoreBox);
+			avoid(tempFlower, autoCollect);
 
 			flowers.push(tempFlower);
 			allObjects.push(tempFlower);
@@ -258,36 +253,26 @@ function obstacleChange()
 		randomY = Math.floor(Math.random() * (canvasHeight - rockSize));
 		newRock = new rock(randomX, randomY);
 
-		// Make sure the new rock isn't in contact with any other object or the scoreBox
-		for (oo = 0; oo < allObjects.length; oo++)
-		{
-			if (!avoid(newRock, allObjects[oo]) || !avoid(newRock, scoreBox))
-			{
-				// If the rock is in contact with something, we have to check the whole array again with the new position
-				oo = 0;
-				newRock.setX(Math.floor(Math.random() * (canvasWidth - rockSize)));
-				newRock.setY(Math.floor(Math.random() * (canvasHeight - rockSize)));
-			}
-		}
+		avoid(newRock, scoreBox);
+		avoid(newRock, autoCollect);
 
 		rocks.push(newRock);
 		allObjects.push(newRock);
 	}
 
 	// For each flower in the array
-	for (ff = 0; ff < flowers.length; ff++)
+	for (let flower of flowers)
 	{
 		// Take off some of its lifespan
-		flowers[ff].age();
+		flower.age();
 	}
 
 	// For each rock in the array
-	for (rr = 0; rr < rocks.length; rr++)
+	for (let rock of rocks)
 	{
 		// Take off some of its lifespan
-		rocks[rr].age();
+		rock.age();
 	}
-
 }
 
 // If this object is at the edge of the canvas, don't go past the border
@@ -317,7 +302,7 @@ function hitWall(obj)
 	}
 }
 
-// Checks if two objects are in contact
+// Checks if two objects are in contact. Returns true if they are in contact.
 function crash(obj1, obj2)
 {
 	var myleft = obj1.getX();
@@ -341,6 +326,8 @@ function crash(obj1, obj2)
 // Repositions an object toCreate to avoid an object toAvoid. Returns true if the objects were never in contact, or false if toCreate was repositioned.
 function avoid(toCreate, toAvoid)
 {
+	var avoided = true;
+
 	while (crash(toCreate, toAvoid))
 	{
 		randomX = Math.floor(Math.random() * (canvasWidth - rockSize));
@@ -348,130 +335,18 @@ function avoid(toCreate, toAvoid)
 		toCreate.setX(randomX);
 		toCreate.setY(randomY);
 
-		return false;
+		avoided = false;
 	}
 
-	return true;
+	return avoided;
 }
 
-// Moves the bee according to the cursor, and save data for rock bounce animation
+// Moves the bee according to the cursor
 function mouseMove()
 {
 	var mouseX = event.clientX;
 	var mouseY = event.clientY;
 	myBee.newPos(mouseX, mouseY);
-
-}
-
-// Makes an upgrade object
-function makeUpgrade(name, startCost, honey)
-{
-	var upgrade = document.createElement("div");
-	upgrade.setAttribute("class", "upgrade");
-	upgrade.cost = startCost;
-	upgrade.costString = upgrade.cost.toString();
-	upgrade.count = 0;
-	upgrade.name = name;
-	upgrade.isHovering = false;
-	upgrade.honey = honey;
-
-	upgrade.addEventListener("mouseover", function()
-		{
-			if (scoreCount >= upgrade.cost)
-			{
-				upgrade.style.backgroundColor = "#d9d9d9";
-			}
-			upgrade.isHovering = true;
-		});
-
-	upgrade.addEventListener("mouseout", function()
-		{
-			upgrade.isHovering = false;
-		});
-
-	upgrade.addEventListener("click", function()
-		{
-			buyUpgrade(upgrade);
-		}
-	);
-
-	upgrade.style.width = (upgradeCanvasWidth-8) + "px"; // This accounts for 2px border... magic number used
-	upgrade.style.height = "100px"; // Magic number, fix this
-	upgrade.style.top = 108*upgrades.length + "px";
-
-	upgrade.innerHTML = upgrade.name + "<br> <p class = \"upgradeCost\"> Cost: " + upgrade.costString + "</p>";
-
-	upgradeArea.container.appendChild(upgrade);
-	upgrades.push(upgrade);
-}
-
-// Called when the user clicks on the test upgrade. Checks if the user can afford the upgrade, then buys it if they can.
-function buyUpgrade(upgrade)
-{
-	if (scoreCount >= upgrade.cost)
-	{
-		scoreCount -= upgrade.cost;
-		hps += upgrade.honey;
-		upgrade.cost = upgrade.cost * 1.25;
-		upgrade.costString = simplifyNumber(upgrade.cost);
-		upgrade.count += 1;
-		upgrade.innerHTML = upgrade.name + "<br> <p class = \"upgradeCost\"> Cost: " + upgrade.costString + "</p> <p class = \"upgradeCount\"> " + upgrade.count + "</p>"
-	}
-}
-
-// Spawns a honey pot
-function honeyPotSpawn()
-{
-	honeyPot = document.createElement("div");
-	honeyPot.setAttribute("class", "honeyPot");
-
-	honeyPot.width = 100; // MAGIC NUMBER, fix this
-	honeyPot.height = 100; // MAGIC NUMBER, fix this
-	honeyPot.x = Math.floor(Math.random()*(canvasWidth - 100)); // MAGIC NUMBER, fix this
-	honeyPot.y = Math.floor(Math.random()*(canvasHeight - 100)); // MAGIC NUMBER, fix this
-	honeyPot.style.width = honeyPot.width + "px";
-	honeyPot.style.height = honeyPot.height + "px";
-	honeyPot.style.left = honeyPot.x + "px";
-	honeyPot.style.top = honeyPot.y + "px";
-	honeyPot.addEventListener("click", function(){honeyPotClick(honeyPot)});
-
-	honeyPotImg = document.createElement("IMG");
-	honeyPotImg.setAttribute("src", "honey pot.png");
-	honeyPotImg.style.width = "100px"; // MAGIC NUMBER, fix this
-	honeyPotImg.style.height = "100px"; // MAGIC NUMBER, fix this
-
-	index = Math.floor(Math.random()*honeyPotEffects.length);
-	honeyPot.effect = honeyPotEffects[index];
-
-	gameContainer.appendChild(honeyPot);
-	honeyPot.appendChild(honeyPotImg);
-
-	honeyPot.delete = setTimeout(function(){honeyPot.parentNode.removeChild(honeyPot)} , 3000);
-}
-
-function honeyPotClick(honeyPot)
-{
-	console.log(honeyPot.effect);
-	// Add a boost of honey equal 10 + to 1 minute of hps
-	if (honeyPot.effect == "Boost")
-	{
-		var boost = (10 + hps*multiplier*60);
-		scoreCount += boost;
-		temp = new textBox(30, "Arial", honeyPot.x, honeyPot.y, "Boost! +" + simplifyNumber(boost), "#000000", true);
-	}
-
-	// Boost hps by 10x for 10 seconds
-	else if (honeyPot.effect == "Hyper")
-	{
-		multiplier *= 10;
-		setTimeout(function(){multiplier /= 10} , 10000);
-		temp = new textBox(30, "Arial", honeyPot.x, honeyPot.y, "Hyper! x10 Production", "#000000", true);
-	}
-
-	honeyPot.parentNode.removeChild(honeyPot);
-	allObjects.push(temp);
-	clearTimeout(honeyPot.delete);
-
 }
 
 // Takes in a number and returns a shortened string version
@@ -483,66 +358,66 @@ function simplifyNumber(number)
 		return "0";
 	}
 
-	else if (number >= 0 && number < 1000)
+	else if (number < Math.pow(10, 3))
 	{
 		return number.toFixed();
 	}
 
-	else if (number >= 1000 && number < 1000000)
+	else if (number < Math.pow(10, 6))
 	{
 		temp = number.toFixed();
 		strIndex = temp.length - 3; // This is the index where the comma will go
 		return temp.substring(0, strIndex) + "," + temp.substring(strIndex);
 	}
 
-	else if (number >= 1000000 && number < 1000000000)
+	else if (number < Math.pow(10, 9))
 	{
-		return (number/1000000).toFixed(3) + " Million";
+		return (number/Math.pow(10, 6)).toFixed(3) + " Million";
 	}
 
-	else if (number >= 1000000000 && number < 1000000000000)
+	else if (number < Math.pow(10, 12))
 	{
-		return (number/1000000000).toFixed(3) + " Billion";
+		return (number/Math.pow(10, 9)).toFixed(3) + " Billion";
 	}
 
-	else if (number >= 1000000000000 && number < 1000000000000000)
+	else if (number < Math.pow(10, 15))
 	{
-		return (number/1000000000000).toFixed(3) + " Trillion";
+		return (number/Math.pow(10, 12)).toFixed(3) + " Trillion";
 	}
 
-	else if (number >= 1000000000000000 && number < 1000000000000000000)
+	else if (number < Math.pow(10, 18))
 	{
-		return (number/1000000000000000).toFixed(3) + " Quadrillion";
+		return (number/Math.pow(10, 15)).toFixed(3) + " Quadrillion";
 	}
 
-	else if (number >= 1000000000000000000 && number < 1000000000000000000000)
+	else if (number < Math.pow(10, 21))
 	{
-		return (number/1000000000000000000).toFixed(3) + " Pentillion";
+		return (number/Math.pow(10, 18)).toFixed(3) + " Pentillion";
 	}
 
-	else if (number >= 1000000000000000000000 && number < 1000000000000000000000000)
+	else if (number < Math.pow(10, 24))
 	{
-		return (number/1000000000000000000000).toFixed(3) + " Hexillion";
+		return (number/Math.pow(10, 21)).toFixed(3) + " Hexillion";
 	}
 
-	else if (number >= 1000000000000000000000000 && number < 1000000000000000000000000000)
+	else if (number < Math.pow(10, 27))
 	{
-		return (number/1000000000000000000000000).toFixed(3) + " Septillion";
+		return (number/Math.pow(10, 24)).toFixed(3) + " Septillion";
 	}
 
-	else if (number >= 1000000000000000000000000000 && number < 1000000000000000000000000000000)
+	else if (number < Math.pow(10, 30))
 	{
-		return (number/1000000000000000000000000000).toFixed(3) + " Octillion";
+		return (number/Math.pow(10, 27)).toFixed(3) + " Octillion";
 	}
 
-	else if (number >= 1000000000000000000000000000000 && number < 1000000000000000000000000000000000)
+	else if (number < Math.pow(10, 33))
 	{
-		return (number/1000000000000000000000000000000).toFixed(3) + " Nonillion";
+		return (number/Math.pow(10, 30)).toFixed(3) + " Nonillion";
 	}
 
-	else if (number >= 1000000000000000000000000000000000 && number < 1000000000000000000000000000000000000)
+	else if (number < Math.pow(10, 36))
 	{
-		return (number/1000000000000000000000000000000000).toFixed(3) + " Decillion";
+		return (number/Math.pow(10, 33)).toFixed(3) + " Decillion";
 	}
 
 	else

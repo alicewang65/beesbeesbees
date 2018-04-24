@@ -15,6 +15,7 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 	// Initially the image is completely opaque
 	this.transparency = 1;
 
+	// Gets the canvas drawing context
 	ctx = myGameArea.context;
 	ctx.font = this.fontSize + " " + this.fontStyle;
 
@@ -34,6 +35,7 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 	}
 
 	this.getWidth = function() {
+		ctx.font = this.fontSize + " " + this.fontStyle;
 		this.width = ctx.measureText(this.text).width;
 		return this.width;
 	}
@@ -54,9 +56,6 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 	// Changes the text of this textBox
 	this.setText = function(text) {
 		this.text = text;
-		ctx = myGameArea.context;
-		ctx.font = this.fontSize + " " + this.fontStyle;
-		this.width = ctx.measureText(this.text).width;
 	}
 
 	this.hit = function() {
@@ -90,6 +89,7 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 			return;
 		}
 
+		// Sets the transparency of the text
 		ctx.globalAlpha = this.transparency;
 		ctx.fillStyle = this.fontColor;
 		ctx.fillText(this.text, this.x, this.y);
