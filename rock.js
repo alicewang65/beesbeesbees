@@ -41,14 +41,14 @@ function rock(x, y)
 	// This function is called when the bee is in contact with the rock
 	this.hit = function() {
 		// How many points do we want a rock to take off?
-		if (scoreCount >= 20)
-			scoreCount -= 20;
+		if (scoreCount >= 20 + hps*30)
+			scoreCount -= 20 + hps*30;
 
 		else
 			scoreCount = 0;
 
 		// Create a "-20" above the rock
-		temp = new textBox(30, "Arial", this.x, this.y-30, "-20", "#e80b0b", true);
+		temp = new textBox(30, "Arial", this.x, this.y-30, "-" + simplifyNumber(20 + hps*30), "#e80b0b", true);
 		allObjects.push(temp);
 
 		this.terminate();
@@ -77,7 +77,6 @@ function rock(x, y)
 	// Draw the rock
 	this.update = function() {
 		ctx = myGameArea.context;
-		ctx.fillStyle = "#4d5259";
 		ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
 	}
 }
