@@ -5,7 +5,7 @@ var allObjects = []; // The array of every object that needs to be drawn
 
 var flowers = [];	// The array of flowers, used for creating/deleting flowers
 var rocks = [];
-var maxFlowers = 100; // The maximum amount of flowers that can appear on the screen at once
+var maxFlowers = 10000; // The maximum amount of flowers that can appear on the screen at once
 var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 
@@ -255,6 +255,8 @@ function obstacleChange()
 
 		avoid(newRock, scoreBox);
 		avoid(newRock, autoCollect);
+
+
 
 		rocks.push(newRock);
 		allObjects.push(newRock);
