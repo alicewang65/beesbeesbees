@@ -137,7 +137,7 @@ function resizeCanvas()
 	//updates the width and height of the canvases
 	canvasWidth = window.innerWidth*0.75;
 	canvasHeight = window.innerHeight*0.95;
-	upgradeWidth = canvasWidth*0.3;
+	upgradeWidth = window.innerWidth*0.20;
 	upgradeHeight = canvasHeight;
 	
 	//update the x and y position of the score box
