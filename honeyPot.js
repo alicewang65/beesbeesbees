@@ -1,5 +1,5 @@
 // The array of possible honeyPot effects, and their properties. Every honeyPot will contain the properties of one of these effects.
-// Timer is the time the effect lasts in ms, interact creates the textbox, startEffect begins the effect, and endEffect ends the effect.
+// Text is the textbox the effect creates, interact begins the intitial effects, startEffect begins the effect, and endEffect ends the effect.
 var honeyPotEffects = [
 	// Boost Effect: Adds 10 honey + 1 minute of Hps to the score count.
 	{
@@ -27,6 +27,7 @@ var honeyPotEffects = [
 			temp = new textBox(30, "Arial", this.x, this.y, "Hyper! x10 Production", "#000000", true);
 		},
 		interact: function() {
+			// Creates timer for the effect
 			this.timer = new effectTimer(this);
 		},
 		startEffect: function() {
@@ -45,9 +46,10 @@ var honeyPotEffects = [
 		name: "Flower Power",
 		timer: 15000,
 		text: function() {
-			temp = new textBox(30, "Arial", this.x, this.y, "Flower Power!", "#000000", true);
+			temp = new textBox(30, "Arial", this.x, this.y, "Flower Power! ", "#000000", true);
 		},
 		interact: function() {
+			// creates timer for this efect
 			this.timer = new effectTimer(this);
 		},
 		startEffect: function() {
@@ -57,28 +59,27 @@ var honeyPotEffects = [
 			flowerBundle = true;
 
 			// Delete all flowers from flower array and allObjects array
-			for (ii = 0; ii < flowers.length; ii++)
+			for (ii = flowers.length - 1; ii >= 0; ii--)
 			{
 				flowers[ii].terminate();
 			}
 
-			console.log(flowers);
-
-			// Re-fill the game canvas with flowers and rocks
+			// Re-fill the game canvas with flowers
 			obstacleChange();
 
 			// Add this to the array of active effects
 			activeEffects.push(this);
 		},
 		endEffect: function() {
-
-			//Clear the flowers and objects arrays of flower bundles
-			for (let flower of flowers)
+			// Delete all flowers from flower array and allObjects array
+			for (ii = flowers.length - 1; ii >= 0; ii--)
 			{
-				flower.terminate();
+				flowers[ii].terminate();
 			}
 
+			// Stop spawning flowerBundles
 			flowerBundle = false;
+			// Flower honey is back to original amount
 			maxFlowerHoney /= 1500;
 
 			// Refill the canvas with normal flowers
@@ -196,14 +197,10 @@ function honeyPot()
 		return element.effect == that.effect;
 	}
 
-	// Remove this honey pot effect from the array of active effects, if it exists in the array.
+	// Remove this honey pot effect from the array of active effects
 	honeyPot.removeEffect = function()
 	{
-		arrayIndex = activeEffects.findIndex(honeyPot.searchEffect);
-
-		if (arrayIndex > -1)
-		{
-			activeEffects.splice(arrayIndex, 1);
-		}
+		arrayIndex = activeEffects.indexOf(this);
+		activeEffects.splice(arrayIndex, 1);
 	}
 }
