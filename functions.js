@@ -2,24 +2,29 @@
 
 var myBee;		// The bee
 var allObjects = []; // The array of every object that needs to be drawn
+var avoidArray = []; // The array of objects that spawing flowers/etc. should avoid.
 
 var flowers = [];	// The array of flowers, used for creating/deleting flowers
 var rocks = [];
 var maxFlowers = 100; // The maximum amount of flowers that can appear on the screen at once
 var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
+var flowerBundle = false;	// Whether or not flowers come in bundles (Flower Power)
 
 var upgrades = [];	// The array of upgrades on screen
-var honeyPotEffects = ["Boost", "Hyper"]; //"Flower Power", "Swarm"
+var activeEffects = [];	// The array of active honeyPot effects
 
-var hph = maxFlowerHoney/3;	// Honey Per Hover (used for flowers)
+function hph()
+{
+	return maxFlowerHoney/3;
+}
 var hps = 0;	// Honey per second (auto-collected)
+var multiplier = 1;
 
 var scoreBox;	// The score textBox
 var autoCollect; // The user's honey per second
 var scoreCount = 0;	// The current score count
 var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
-var multiplier = 1;
 
 var canvasWidth = window.innerWidth*0.75;	// Width of the canvas - 1210 originally
 var canvasHeight = window.innerHeight*0.95;	// Height of the canvas - 710 originally
@@ -28,6 +33,7 @@ const rockSize = 50;		// The height/width of rocks
 const flowerWidth = 70;		// The max width of the flower
 const flowerHeight = 90;	// The max height of the flower
 const honeyPotSize = 100;	// The height and width of a honey pot
+const boostSize = 40;		// The height and width of a boost box
 var frameNo = 0;			// The number of frames that have passed
 
 //sets the x and y positions of the score box
@@ -76,6 +82,8 @@ var myGameArea =
 		// Creates the score textBox object
 		scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "SCORE: 0", "#000000", false);
 		autoCollect = new textBox(20, "Arial", scoreBoxX, scoreBoxY + scoreBox.getHeight(), "Hps: 0", "#000000", false);
+		avoidArray.push(scoreBox);
+		avoidArray.push(autoCollect);
 
 		// Add flower object(s) to the flowers array
 		obstacleChange();
@@ -175,12 +183,11 @@ function updateGameArea()
 		obstacleChange();
 	}
 
-	// Every 1500 frames (or 30 seconds), a honey pot will spawn
+	// Every 250 frames (or 5 seconds), a honey pot will spawn
 	if (frameNo % 250 == 0)
 	{
 		hp = new honeyPot();
-		avoid(hp, scoreBox);
-		avoid(hp, autoCollect);
+		avoid(hp, [scoreBox, autoCollect]);
 	}
 
 	scoreString = simplifyNumber(scoreCount);
@@ -219,6 +226,7 @@ function updateGameArea()
 
 	scoreBox.update();
 	autoCollect.update();
+
 	myBee.draw();
 }
 
@@ -236,10 +244,16 @@ function obstacleChange()
 			flowerImage = new Image();
 			flowerImage.src = "flower" + randomImageId + ".png";
 
+			if (flowerBundle)
+			{
+				flowerImage.src = "flowerBundle.png"
+			}
+
 			tempFlower = new flower(randomX, randomY, flowerImage);
 
-			avoid(tempFlower, scoreBox);
-			avoid(tempFlower, autoCollect);
+			flowerSpawn = avoidArray;
+			flowerSpawn.concat(rocks);
+			avoid(tempFlower, flowerSpawn);
 
 			flowers.push(tempFlower);
 			allObjects.push(tempFlower);
@@ -253,8 +267,8 @@ function obstacleChange()
 		randomY = Math.floor(Math.random() * (canvasHeight - rockSize));
 		newRock = new rock(randomX, randomY);
 
-		avoid(newRock, scoreBox);
-		avoid(newRock, autoCollect);
+		// Rocks avoid scoreboxes
+		avoid(newRock, avoidArray);
 
 		rocks.push(newRock);
 		allObjects.push(newRock);
@@ -323,19 +337,26 @@ function crash(obj1, obj2)
 	return crash;
 }
 
-// Repositions an object toCreate to avoid an object toAvoid. Returns true if the objects were never in contact, or false if toCreate was repositioned.
+// Repositions an object toCreate to avoid an array of objects toAvoid. Returns true if the objects were never in contact, or false if toCreate was repositioned.
 function avoid(toCreate, toAvoid)
 {
 	var avoided = true;
 
-	while (crash(toCreate, toAvoid))
+	// For each object in the array of objects to avoid, if there is contact reposition toCreate
+	for (ii = 0; ii < toAvoid.length; ii++)
 	{
-		randomX = Math.floor(Math.random() * (canvasWidth - rockSize));
-		randomY = Math.floor(Math.random() * (canvasHeight - rockSize));
-		toCreate.setX(randomX);
-		toCreate.setY(randomY);
+		if (crash(toCreate, toAvoid[ii]))
+		{
+			randomX = Math.floor(Math.random() * (canvasWidth - rockSize));
+			randomY = Math.floor(Math.random() * (canvasHeight - rockSize));
+			toCreate.setX(randomX);
+			toCreate.setY(randomY);
 
-		avoided = false;
+			avoided = false;
+
+			// We have to go through the whole array again if there was contact/repositioning
+			ii = -1;
+		}
 	}
 
 	return avoided;
