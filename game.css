@@ -125,3 +125,21 @@ body
 	height: 100px;
 	cursor: pointer;
 }
+
+.effectTimer
+{
+	position: absolute;
+	border: solid #262626;
+	border-width: 4px;
+	cursor: pointer;
+ 	background-color: gold;
+}
+
+.timer_whitespace
+{
+	position: absolute;
+	background-color: white;
+	cursor: pointer;
+	top: 0px;
+	left: 0px;
+}

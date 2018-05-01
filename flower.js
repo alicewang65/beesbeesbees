@@ -39,27 +39,30 @@ function flower(x, y, image)
 
 	this.setX = function(x) {
 		this.x = x;
+		this.originalX = x;
 	}
 
 	this.setY = function(y) {
 		this.y = y;
+		this.originalY = y;
 	}
 
 	// This function is called when the bee is in contact with the flower
 	this.hit = function() {
 		this.hoverCount++;
 
+		// Every tenth of a collection shrink the flower by a tenth of its size
 		if (this.hoverCount%(collectionSpeed/10) == 0)
 		{
-			this.honey -= hph/10;
+			this.honey -= hph()/10;
 		}
 		
-		// We can add upgrades that change how long it takes to harvest honey, right now it takes 1 second to get 10 honey
+		// At the collection speed, collect the hph value of honey
 		if (this.hoverCount%collectionSpeed == 0)
 		{
-			scoreCount += hph;
+			scoreCount += hph();
 			// Create a "+10" above the flower
-			temp = new textBox(30, "Arial", this.x, this.y-30, "+" + simplifyNumber(hph), "#000000", true);
+			temp = new textBox(30, "Arial", this.x, this.y-30, "+" + simplifyNumber(hph()), "#000000", true);
 			allObjects.push(temp);
 		}
 
