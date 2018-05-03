@@ -38,7 +38,7 @@ var honeyPotEffects = [
 		},
 		endEffect: function() {
 			multiplier /= 10;
-			honeyPot.removeEffect();
+			honeyPot.removeEffect(this);
 		}
 	},
 
@@ -86,7 +86,7 @@ var honeyPotEffects = [
 
 			// Refill the canvas with normal flowers
 			obstacleChange();
-			honeyPot.removeEffect();
+			honeyPot.removeEffect(this);
 		}
 	}];
 	// More ideas: "Swarm" - clears screen of flowers and collects all honey at once
@@ -162,9 +162,9 @@ function honeyPot()
 	}
 
 	// Remove this honey pot effect from the array of active effects
-	honeyPot.removeEffect = function()
+	honeyPot.removeEffect = function(reference)
 	{
-		arrayIndex = activeEffects.indexOf(this);
+		arrayIndex = activeEffects.indexOf(reference);
 		activeEffects.splice(arrayIndex, 1);
 	}
 }
