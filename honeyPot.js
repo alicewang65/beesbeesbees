@@ -4,7 +4,7 @@ var honeyPotEffects = [
 	// Boost Effect: Adds 10 honey + 1 minute of Hps to the score count.
 	{
 		name: "Boost",
-		timer: 0,
+		effectLength: 0,
 		text: function() {
 			var boost = (10 + hps*multiplier*60);
 			temp = new textBox(30, "Arial", this.x, this.y, "Boost! +" + simplifyNumber(boost), "#000000", true);
@@ -22,7 +22,8 @@ var honeyPotEffects = [
 	// Hyper Effect: Multiplies Hps by 10 for ten seconds
 	{
 		name: "Hyper",
-		timer: 10000,
+		effectLength: 10000,
+		imageSrc: "x10image.png",
 		text: function() {
 			temp = new textBox(30, "Arial", this.x, this.y, "Hyper! x10 Production", "#000000", true);
 		},
@@ -44,7 +45,8 @@ var honeyPotEffects = [
 	// Flower Power Effect: All flowers are bundles, and give 150x honey per hover interval
 	{
 		name: "Flower Power",
-		timer: 15000,
+		effectLength: 15000,
+		imageSrc: "flowerbundleoutline.png",
 		text: function() {
 			temp = new textBox(30, "Arial", this.x, this.y, "Flower Power! ", "#000000", true);
 		},
@@ -94,34 +96,20 @@ var honeyPotEffects = [
 // Creates Honey Pot object
 function honeyPot()
 {
-	// The node that carries the div (required for placing the div in the game container)
-	this.node = document.createElement("div");
+	// Create the general structure of a honeyPot by extending the boost framework
+	randomX = Math.random()*(canvasWidth - honeyPotSize);
+	randomY = Math.random()*(canvasHeight - honeyPotSize);
+	boost.call(this, randomX, randomY, honeyPotSize, honeyPotSize, "honey pot.png");
 	this.node.setAttribute("class", "honeyPot");
+
 	var that = this; // I hate this
-
-	// Returnable variables
-	this.width = honeyPotSize;
-	this.height = honeyPotSize;
-	this.x = Math.floor(Math.random()*(canvasWidth - this.width));
-	this.y = Math.floor(Math.random()*(canvasHeight - this.height));
-
-	// Node Styling
-	this.node.style.width = this.width + "px";
-	this.node.style.height = this.height + "px";
-	this.node.style.left = this.x + "px";
-	this.node.style.top = this.y + "px";
 	this.node.addEventListener("click", function(){that.click()});
-
-	// Creating the image and sizing it
-	this.image = document.createElement("IMG");
-	this.image.setAttribute("src", "honey pot.png");
-	this.image.style.width = honeyPotSize + "px";
-	this.image.style.height = honeyPotSize + "px";
 
 	// Gets and applies a random honey pot effect/properties
 	index = Math.floor(Math.random()*honeyPotEffects.length);
 	this.effect = honeyPotEffects[index].name;
-	this.effectLength = honeyPotEffects[index].timer;
+	this.effectLength = honeyPotEffects[index].effectLength;
+	this.imageSrc = honeyPotEffects[index].imageSrc;
 	this.text = honeyPotEffects[index].text;
 	this.interact = honeyPotEffects[index].interact;
 	this.startEffect = honeyPotEffects[index].startEffect;
@@ -132,34 +120,9 @@ function honeyPot()
 	this.node.appendChild(this.image);
 	gameContainer.appendChild(this.node);
 
+	var that = this; // I hate this
 	// The node will self-delete after 3 seconds if it is not clicked
 	this.delete = setTimeout(function(){that.node.parentNode.removeChild(that.node)} , 3000);
-
-	this.getX = function() {
-		return this.x;
-	}
-
-	this.getY = function() {
-		return this.y;
-	}
-
-	this.getWidth = function() {
-		return this.width;
-	}
-
-	this.getHeight = function() {
-		return this.height;
-	}
-
-	this.setX = function(x) {
-		this.x = x;
-		this.node.style.left = x + "px";
-	}
-
-	this.setY = function(y) {
-		this.y = y;
-		this.node.style.top = y + "px";
-	}
 
 	// Called when the honey pot (node) is clicked
 	this.click = function()
@@ -167,6 +130,7 @@ function honeyPot()
 		// Creates the textbox for this effect.
 		this.text();
 
+		var that = this; // I hate this, but I need it for searchEffect
 		// Check if this effect is already active
 		arrayIndex = activeEffects.findIndex(honeyPot.searchEffect);
 

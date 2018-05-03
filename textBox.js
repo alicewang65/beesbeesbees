@@ -96,3 +96,11 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 		ctx.globalAlpha = 1;
 	}
 }
+
+
+
+// The object used for detail textbox, which appear when the user hovers over an interactable object.
+function detailsBox()
+{
+	// Start coding
+}

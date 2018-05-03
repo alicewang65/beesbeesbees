@@ -1,6 +1,6 @@
 // The object used for upgrade boosts or displaying Honey Pot effect timers.
 // This object will probably never be used, but can be a parent object of different boost types.
-function boost(x, y, width, height)
+function boost(x, y, width, height, imageSrc)
 {
 	this.width = width;
 	this.height = height;
@@ -15,7 +15,16 @@ function boost(x, y, width, height)
 	this.node.style.height = this.height + "px";
 	this.node.style.left = this.x + "px";
 	this.node.style.top = this.y + "px";
+
+	this.image = document.createElement("IMG");
+	this.image.setAttribute("src", imageSrc);
+	this.image.style.width = this.width + "px";
+	this.image.style.height = this.height + "px";
+	this.image.style.position = "absolute";
+
+	this.node.appendChild(this.image);
 	gameContainer.appendChild(this.node);
+
 
 	this.getX = function() {
 		return this.x;
@@ -48,8 +57,9 @@ function boost(x, y, width, height)
 function effectTimer(reference)
 {
 	// Create the general structure of a timer
-	boost.call(this, ((canvasWidth*0.95) - boostSize), (canvasHeight*0.05), boostSize, boostSize);
+	boost.call(this, ((canvasWidth*0.95) - boostSize), (canvasHeight*0.05), boostSize, boostSize, reference.imageSrc);
 	this.node.setAttribute("class", "effectTimer");
+
 	// Set the honey pot reference to this timer
 	this.reference = reference;
 	// Get the timer length values for the passed in honey pot effect
@@ -64,7 +74,8 @@ function effectTimer(reference)
 	this.whitespace = document.createElement("div");
 	this.whitespace.setAttribute("class", "timer_whitespace");
 	this.whitespace.style.height = "0 px";
-	this.whitespace.style.width = boostSize + "px"
+	this.whitespace.style.width = boostSize + "px";
+	this.whitespace.style.position = "absolute";
 	this.node.appendChild(this.whitespace);
 
 	// Start the honey pot effect
@@ -112,9 +123,6 @@ function effectTimer(reference)
 	{
 		// Fix the y positioning of the timer in case a timer above it has been deleted.
 		buffer = (canvasHeight*0.05) + (boostSize*1.25)*activeEffects.indexOf(this.reference);
-		console.log(activeEffects.indexOf(this.reference));
-		console.log(activeEffects);
-		console.log(this.reference);
 		this.setY(buffer);
 
 		// If the timer has run out, delete it.
