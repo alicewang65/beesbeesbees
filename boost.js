@@ -48,8 +48,8 @@ function boost(x, y, width, height)
 function effectTimer(reference)
 {
 	// Create the general structure of a timer
-	boost.call(this, ((canvasWidth*0.95) - boostSize), (canvasHeight*0.05), boostSize, boostSize);
-	this.node.setAttribute("class", "effectTimer");
+	boost.call(this, ((canvasWidth*0.95) - boostSize), (canvasHeight*0.05));
+	this.node.setAttribute("class", "hexagon");
 	// Set the honey pot reference to this timer
 	this.reference = reference;
 	// Get the timer length values for the passed in honey pot effect
@@ -64,7 +64,7 @@ function effectTimer(reference)
 	this.whitespace = document.createElement("div");
 	this.whitespace.setAttribute("class", "timer_whitespace");
 	this.whitespace.style.height = "0 px";
-	this.whitespace.style.width = boostSize + "px"
+	// this.whitespace.style.width = boostSize + "px"
 	this.node.appendChild(this.whitespace);
 
 	// Start the honey pot effect
@@ -127,7 +127,7 @@ function effectTimer(reference)
 		else
 		{
 			this.currentTime -= 20;
-			this.whitespace.style.height = (1 - this.currentTime/this.length)*boostSize + "px";
+			this.whitespace.style.height = (1 - this.currentTime/this.length)*62 + "px";
 		}
 	}
 }

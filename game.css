@@ -21,16 +21,58 @@ body
 	position: relative;
 }
 
+.upgrade
+{
+	overflow-y: scroll;
+	overflow-x: scroll;
+}
+
+.hexagon {
+  position: absolute;
+  width: 50px;
+  height: 28.87px;
+  background-color: #e9ca5c;
+  margin: 14.43px 0;
+  border-left: solid 2px #333333;
+  border-right: solid 2px #333333;
+}
+
+.hexagon:before,
+.hexagon:after {
+  content: "";
+  position: absolute;
+  width: 35.5px;
+  height: 35.5px;
+  -webkit-transform: scaleY(0.5774) rotate(-45deg);
+  -ms-transform: scaleY(0.5774) rotate(-45deg);
+  transform: scaleY(0.5774) rotate(-45deg);
+  background-color: inherit;
+  left: 6.1px; /*5.3223px;*/
+}
+
+.hexagon:before {
+  top: -19.4px;
+  border-top: solid 2.8284px #333333;
+  border-right: solid 2.8284px #333333;
+}
+
+.hexagon:after {
+  bottom: -19.3px;
+  border-bottom: solid 2.8284px #333333;
+  border-left: solid 2.8284px #333333;
+}
+
+
 /* The Modal (background) */
 .modal {
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    position: fixed;  /*Stay in place */
+    z-index: 1;  /*Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
+    height: 100%; /* Full height*/ 
+    overflow: auto; /* Enable scroll if needed*/ 
     background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
 }
 
@@ -43,7 +85,7 @@ body
     width: 35%;
     cursor: default;
 
-	/* This code makes the upgrade text unselectable/unhighlightable */
+	/* This code makes the upgrade text unselectable/unhighlightable 
 	-webkit-touch-callout: none; /* iOS Safari */
 		-webkit-user-select: none; /* Safari */
 		-khtml-user-select: none; /* Konqueror HTML */
@@ -139,8 +181,11 @@ body
 .timer_whitespace
 {
 	position: absolute;
-	background-color: white;
+	background-color: 	 #4dff4d;
+	background-image: url(https://www.transparenttextures.com/patterns/grey-sandbag.png);
 	cursor: pointer;
-	top: 0px;
-	left: 0px;
+	z-index: 3;
+	width: 55px;
+	top: -17px;
+	left: -2px;
 }
