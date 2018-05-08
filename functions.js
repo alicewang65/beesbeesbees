@@ -6,7 +6,7 @@ var avoidArray = []; // The array of objects that spawing flowers/etc. should av
 
 var flowers = [];	// The array of flowers, used for creating/deleting flowers
 var rocks = [];
-var maxFlowers = 100; // The maximum amount of flowers that can appear on the screen at once
+var maxFlowers = 10; // The maximum amount of flowers that can appear on the screen at once
 var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 var flowerBundle = false;	// Whether or not flowers come in bundles (Flower Power)
@@ -111,10 +111,13 @@ var myGameArea =
 //Variable that updates the game area
 var upgradeArea =
 {
+	// Create a div container for all upgrade elements
 	container : document.createElement("div"),
 
 	// Create and initialize canvas and container
 	canvas : document.createElement("canvas"),
+	// The div that contains all the mini upgrades
+	storeArea : document.createElement("div"),
 	start : function() {
 		this.container.setAttribute("id", "upgradeContainer");
 
@@ -123,10 +126,16 @@ var upgradeArea =
 		this.canvas.setAttribute("id", "upgradeCanvas");
 		this.context = this.canvas.getContext("2d");
 
+		this.storeArea.setAttribute("id", "storeArea");
+		this.storeArea.style.width = (upgradeCanvasWidth-8) + "px";
+		this.storeArea.style.height = upgradeCanvasHeight*(.3) + "px";
+		this.storeArea.innerHTML = "STORE";
+
 		// Add the canvas to the start of html body, after the game canvas
 		var mainCanvas = document.getElementById("gameContainer");
 		mainCanvas.parentNode.insertBefore(this.container, mainCanvas.nextSibling);
 		this.container.appendChild(this.canvas);
+		this.container.appendChild(this.storeArea);
 
 		new upgrade("Worker Bee", 10, 1);
 		new upgrade("Queen Bee", 15, 2);

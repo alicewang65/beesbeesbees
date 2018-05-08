@@ -28,7 +28,7 @@ function upgrade(name, startCost, honeyPerSec)
 	// Set the css and positioning for the upgrade
 	this.node.style.width = (upgradeCanvasWidth-8) + "px"; // Magic Number for Border
 	this.node.style.height = "100px"; // Magic number, fix this
-	this.node.style.top = 108*upgrades.length + "px";
+	this.node.style.top = upgradeCanvasHeight*.3 + 108*upgrades.length + "px";
 
 	// Text that goes inside the upgrade node
 	this.node.innerHTML = this.name + "<br> <p class = \"upgradeCost\"> Cost: " + this.costString + "</p>";
