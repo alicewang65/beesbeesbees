@@ -193,8 +193,8 @@ function updateGameArea()
 	scoreString = simplifyNumber(scoreCount);
 
 	// Update the score for the game
-	scoreBox.setText("SCORE: " + scoreString);
-	autoCollect.setText("Hps: " + simplifyNumber(hps*multiplier));
+	scoreBox.setText(scoreString + "of honey");
+	autoCollect.setText(simplifyNumber(hps*multiplier) + "per second");
 
 	// Checks all objects if they are in contact with the bee and updates them
 	for (let object of allObjects)
@@ -381,64 +381,57 @@ function simplifyNumber(number)
 
 	else if (number < Math.pow(10, 3))
 	{
-		return number.toFixed();
+		return number.toFixed() + " nanoliters ";
 	}
 
 	else if (number < Math.pow(10, 6))
 	{
-		temp = number.toFixed();
-		strIndex = temp.length - 3; // This is the index where the comma will go
-		return temp.substring(0, strIndex) + "," + temp.substring(strIndex);
+		return (number/Math.pow(10, 3)).toFixed(3) + " mililiters ";
 	}
 
 	else if (number < Math.pow(10, 9))
 	{
-		return (number/Math.pow(10, 6)).toFixed(3) + " Million";
+		return (number/Math.pow(10, 6)).toFixed(3) + " liters ";
 	}
 
 	else if (number < Math.pow(10, 12))
 	{
-		return (number/Math.pow(10, 9)).toFixed(3) + " Billion";
+		return (number/Math.pow(10, 9)).toFixed(3) + " kiloliters ";
 	}
 
 	else if (number < Math.pow(10, 15))
 	{
-		return (number/Math.pow(10, 12)).toFixed(3) + " Trillion";
+		return (number/Math.pow(10, 12)).toFixed(3) + " megaliters ";
 	}
 
 	else if (number < Math.pow(10, 18))
 	{
-		return (number/Math.pow(10, 15)).toFixed(3) + " Quadrillion";
+		return (number/Math.pow(10, 15)).toFixed(3) + " gigaliters ";
 	}
 
 	else if (number < Math.pow(10, 21))
 	{
-		return (number/Math.pow(10, 18)).toFixed(3) + " Pentillion";
+		return (number/Math.pow(10, 18)).toFixed(3) + " teraliters ";
 	}
 
 	else if (number < Math.pow(10, 24))
 	{
-		return (number/Math.pow(10, 21)).toFixed(3) + " Hexillion";
+		return (number/Math.pow(10, 21)).toFixed(3) + " petaliters ";
 	}
 
 	else if (number < Math.pow(10, 27))
 	{
-		return (number/Math.pow(10, 24)).toFixed(3) + " Septillion";
+		return (number/Math.pow(10, 24)).toFixed(3) + " exaliters ";
 	}
 
 	else if (number < Math.pow(10, 30))
 	{
-		return (number/Math.pow(10, 27)).toFixed(3) + " Octillion";
+		return (number/Math.pow(10, 27)).toFixed(3) + " zottaliters ";
 	}
 
 	else if (number < Math.pow(10, 33))
 	{
-		return (number/Math.pow(10, 30)).toFixed(3) + " Nonillion";
-	}
-
-	else if (number < Math.pow(10, 36))
-	{
-		return (number/Math.pow(10, 33)).toFixed(3) + " Decillion";
+		return (number/Math.pow(10, 30)).toFixed(3) + " yottaliters ";
 	}
 
 	else
