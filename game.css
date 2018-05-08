@@ -120,6 +120,16 @@ body
 	overflow-y: scroll;
 }
 
+#storeArea
+{
+	background-color: white;
+	position: absolute;
+	top: 0px;
+	border: solid #262626 4px;
+	font-size: 30px;
+	text-align: center;
+}
+
 .upgrade
 {
 	position: absolute;
