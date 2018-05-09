@@ -75,7 +75,7 @@ function effectTimer(reference)
 	this.whitespace = document.createElement("div");
 	this.whitespace.setAttribute("class", "timer_whitespace");
 	this.whitespace.style.height = "0 px";
-	//this.whitespace.style.width = boostSize + "px";
+	this.whitespace.style.width = boostSize + 8 + "px";
 	this.whitespace.style.position = "absolute";
 	this.node.appendChild(this.whitespace);
 
@@ -123,7 +123,7 @@ function effectTimer(reference)
 	this.update = function()
 	{
 		// Fix the y positioning of the timer in case a timer above it has been deleted.
-		buffer = (canvasHeight*0.05) + (boostSize*1.25)*activeEffects.indexOf(this.reference);
+		buffer = (canvasHeight*0.05) + ((boostSize + 34)*1.25)*activeEffects.indexOf(this.reference);
 		this.setY(buffer);
 
 		// If the timer has run out, delete it.
@@ -136,7 +136,7 @@ function effectTimer(reference)
 		else
 		{
 			this.currentTime -= 20;
-			this.whitespace.style.height = (1 - this.currentTime/this.length)*62 + "px";
+			this.whitespace.style.height = (1 - this.currentTime/this.length)*(boostSize + 34) + "px";
 		}
 	}
 }

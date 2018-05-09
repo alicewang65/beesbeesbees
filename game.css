@@ -26,8 +26,6 @@ body
 
 .hexagon {
   position: absolute;
-  width: 50px;
-  height: 28.87px;
   background-color: #e9ca5c;
   margin: 14.43px 0;
   border-left: solid 2px #333333;
@@ -197,7 +195,6 @@ body
 	background-image: url(https://www.transparenttextures.com/patterns/grey-sandbag.png);
 	cursor: pointer;
 	z-index: 3;
-	width: 55px;
 	top: -17px;
 	left: -2px;
 }

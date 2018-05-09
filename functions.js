@@ -33,7 +33,7 @@ const rockSize = 50;		// The height/width of rocks
 const flowerWidth = 70;		// The max width of the flower
 const flowerHeight = 90;	// The max height of the flower
 const honeyPotSize = 100;	// The height and width of a honey pot
-const boostSize = 40;		// The height and width of a boost box
+const boostSize = 50;		// The height and width of a boost box
 var frameNo = 0;			// The number of frames that have passed
 
 //sets the x and y positions of the score box
