@@ -39,8 +39,8 @@ var myBee =
 
 	// Moves the bee to the mouse location
 	newPos : function(x, y) {
-		this.x = x - (this.image.width);
-		this.y = y - (this.image.height);
+		this.x = x - (this.image.width)/2;
+		this.y = y - (this.image.height)/2;
 		hitWall(this);
 	},
 
