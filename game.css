@@ -24,12 +24,6 @@ body
 	cursor: none;
 }
 
-.upgrade
-{
-	overflow-y: scroll;
-	overflow-x: scroll;
-}
-
 .hexagon {
   position: absolute;
   width: 50px;
