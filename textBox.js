@@ -1,4 +1,4 @@
-// The object used for the score textBox, as well as any other necessary texts
+// The object used for all canvas context drawn textboxes.
 // fontSize, x, and y are ints, and everything else is a string/bool
 function textBox(fontSize, fontStyle, x, y, text, color, animate)
 {
@@ -94,6 +94,77 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 		ctx.fillStyle = this.fontColor;
 		ctx.fillText(this.text, this.x, this.y);
 		ctx.globalAlpha = 1;
+	}
+}
+
+
+// The object used for any textboxes that need to be divs (not canvas). Appends the div to the passed in container
+function stringBox(fontSize, x, y, text, time, container)
+{
+	textBox.call(this, fontSize, "Arial", x, y, text, "#000000", false);
+	this.y = y;
+	this.time = time;
+
+	// The node that carries the div (required for placing the div in the game container)
+	this.node = document.createElement("div");
+	this.node.setAttribute("class", "TextBox unselectable");
+
+	// Node Styling
+	this.node.style.left = this.x + "px";
+	this.node.style.top = this.y + "px";
+
+	this.par = document.createElement("P");
+	this.par.setAttribute("class", "BoxText unselectable");
+	this.par.innerHTML = this.text;
+	this.par.style.fontSize = this.fontSize;
+	this.par.style.fontStyle = this.fontStyle;
+	this.par.style.color = this.fontColor;
+
+	this.node.appendChild(this.par);
+	container.appendChild(this.node);
+
+	//Gets the width of the text in the current font
+	this.width = this.par.getBoundingClientRect().width;
+	// Text height is just font size
+	this.height = this.par.getBoundingClientRect().height;
+
+	this.getY = function() {
+		return this.y;
+	}
+
+	this.getWidth = function() {
+		this.width = this.par.getBoundingClientRect().width;
+		return this.width;
+	}
+
+	this.getHeight = function() {
+		this.height = this.par.getBoundingClientRect().height;
+		return this.height;
+	}
+
+	this.setY = function(y) {
+		this.y = y;
+	}
+
+	// Changes the text of this textBox
+	this.setText = function(text) {
+		this.text = text;
+		this.par.innerHTML = text;
+	}
+
+	// Draws the textbox to the canvas
+	this.update = function() {
+
+		this.time--;
+
+		// If the time has run out, delete the string box
+		if (this.time == 0)
+		{
+			index = allObjects.indexOf(this);
+			allObjects.splice(index, 1);
+			this.node.parentNode.removeChild(this.node);
+			return;
+		}
 	}
 }
 

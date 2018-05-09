@@ -3,6 +3,17 @@ body
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+.unselectable
+{
+	/* This code makes text unselectable/unhighlightable */
+	-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Safari */
+		-khtml-user-select: none; /* Konqueror HTML */
+		-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none;
+}
+
 #myCanvas
 {
 	border: 1px solid #000000;
@@ -11,14 +22,6 @@ body
 	position: relative;
 	display: inline-block;
 	cursor: none;
-}
-
-#upgradeCanvas
-{
-	border: 1px solid #000000;
-	border-left: none;
-	background-color: pink;
-	position: relative;
 }
 
 /* The Modal (background) */
@@ -42,14 +45,6 @@ body
     border: 2px solid #000000;
     width: 35%;
     cursor: default;
-
-	/* This code makes the upgrade text unselectable/unhighlightable */
-	-webkit-touch-callout: none; /* iOS Safari */
-		-webkit-user-select: none; /* Safari */
-		-khtml-user-select: none; /* Konqueror HTML */
-		-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none;
 }
 
 /* The Close Button */
@@ -70,7 +65,6 @@ body
 #gameContainer, #upgradeContainer
 {
 	display: inline-block;
-	position: relative;
 }
 
 #upgradeContainer
@@ -78,19 +72,42 @@ body
 	overflow-y: scroll;
 }
 
+#storeSign
+{
+	background-color: gray;
+	position: relative;
+	font-size: 30px;
+	text-align: center;
+	border: solid #262626 4px;
+	border-bottom: 0px;
+}
+
 #storeArea
 {
-	background-color: white;
-	position: absolute;
-	top: 0px;
+	background-color: gold;
+	position: relative;
 	border: solid #262626 4px;
 	font-size: 30px;
 	text-align: center;
 }
 
-.upgrade
+.TextBox
 {
 	position: absolute;
+	z-index: 1;
+	cursor: none;
+}
+
+.BoxText
+{
+	padding: 0;
+	margin: 0;
+	cursor: none;
+}
+
+.upgrade
+{
+	position: relative;
 	background-color: white;
 	border: solid #262626;
 	border-width: 4px;
@@ -99,14 +116,6 @@ body
 	cursor: pointer;
 
 	border-style: outset;
-
-	/* This code makes the upgrade text unselectable/unhighlightable */
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-khtml-user-select: none; /* Konqueror HTML */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none;
 }
 
 .upgrade:hover

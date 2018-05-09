@@ -79,25 +79,23 @@ var myGameArea =
 		this.canvas.setAttribute("id", "myCanvas");
 		this.context = this.canvas.getContext("2d");
 
-		// Creates the score textBox object
-		scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "SCORE: 0", "#000000", false);
-		autoCollect = new textBox(20, "Arial", scoreBoxX, scoreBoxY + scoreBox.getHeight(), "Hps: 0", "#000000", false);
-		avoidArray.push(scoreBox);
-		avoidArray.push(autoCollect);
-
-		// Add flower object(s) to the flowers array
-		obstacleChange();
-
-		// Draw the bee and scoreBox for the initial frame
-		myBee.draw();
-		scoreBox.update();
-		autoCollect.update();
-
 		// When the mouse is moved, call mouseMove function (makes bee move)
 		this.canvas.addEventListener("mousemove", function(){mouseMove()});
 		// Add the canvas to the start of html body
 		document.body.insertBefore(this.container, document.body.childNodes[0]);
 		this.container.appendChild(this.canvas);
+
+		// Add flower object(s) to the flowers array
+		obstacleChange();
+
+		// Draw the bee for the initial frame
+		myBee.draw();
+
+		// Creates the score textBox object
+		scoreBox = new textBox(30, "Arial", scoreBoxX, scoreBoxY, "SCORE: 0", "#000000", false);
+		autoCollect = new textBox(20, "Arial", scoreBoxX, scoreBoxY + scoreBox.getHeight(), "Hps: 0", "#000000", false);
+		avoidArray.push(scoreBox);
+		avoidArray.push(autoCollect);
 
 		// Every 20ms, call the updateGameArea function
 		this.interval = setInterval(updateGameArea, 20);
@@ -114,27 +112,26 @@ var upgradeArea =
 	// Create a div container for all upgrade elements
 	container : document.createElement("div"),
 
-	// Create and initialize canvas and container
-	canvas : document.createElement("canvas"),
+	// The div that contains the store sign
+	storeSign : document.createElement("div"),
 	// The div that contains all the mini upgrades
 	storeArea : document.createElement("div"),
 	start : function() {
 		this.container.setAttribute("id", "upgradeContainer");
+		this.container.style.maxHeight = canvasHeight + "px";
 
-		this.canvas.width = upgradeCanvasWidth;
-		this.canvas.height = upgradeCanvasHeight;
-		this.canvas.setAttribute("id", "upgradeCanvas");
-		this.context = this.canvas.getContext("2d");
+		this.storeSign.setAttribute("id", "storeSign");
+		this.storeSign.style.width = (upgradeCanvasWidth - 8) + "px";
+		this.storeSign.innerHTML = "STORE";
 
 		this.storeArea.setAttribute("id", "storeArea");
-		this.storeArea.style.width = (upgradeCanvasWidth-8) + "px";
+		this.storeArea.style.width = (upgradeCanvasWidth - 8) + "px";
 		this.storeArea.style.height = upgradeCanvasHeight*(.3) + "px";
-		this.storeArea.innerHTML = "STORE";
 
-		// Add the canvas to the start of html body, after the game canvas
+		// Add this container to the start of html body, after the game canvas
 		var mainCanvas = document.getElementById("gameContainer");
 		mainCanvas.parentNode.insertBefore(this.container, mainCanvas.nextSibling);
-		this.container.appendChild(this.canvas);
+		this.container.appendChild(this.storeSign);
 		this.container.appendChild(this.storeArea);
 
 		new upgrade("Worker Bee", 10, 1);
@@ -164,8 +161,6 @@ function resizeCanvas()
 	//changes the actual canvases' widths and heights
 	myGameArea.canvas.width = canvasWidth;
 	myGameArea.canvas.height = canvasHeight;
-	upgradeArea.canvas.width = upgradeWidth;
-	upgradeArea.canvas.height = upgradeHeight;
 
 	//changes the score box object's positions
 	scoreBox.setX(scoreBoxX);

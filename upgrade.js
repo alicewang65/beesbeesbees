@@ -3,7 +3,7 @@ function upgrade(name, startCost, honeyPerSec)
 {
 	// This is the node that contains the div
 	this.node = document.createElement("div");
-	this.node.setAttribute("class", "upgrade");
+	this.node.setAttribute("class", "upgrade unselectable");
 
 	// Save cost, upgrade count, and honey variables to this object
 	this.cost = startCost;
@@ -27,8 +27,7 @@ function upgrade(name, startCost, honeyPerSec)
 
 	// Set the css and positioning for the upgrade
 	this.node.style.width = (upgradeCanvasWidth-8) + "px"; // Magic Number for Border
-	this.node.style.height = "100px"; // Magic number, fix this
-	this.node.style.top = upgradeCanvasHeight*.3 + 108*upgrades.length + "px";
+	this.node.style.height = "100px"; // This just looks nice
 
 	// Text that goes inside the upgrade node
 	this.node.innerHTML = this.name + "<br> <p class = \"upgradeCost\"> Cost: " + this.costString + "</p>";

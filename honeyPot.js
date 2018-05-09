@@ -7,7 +7,7 @@ var honeyPotEffects = [
 		effectLength: 0,
 		text: function() {
 			var boost = (10 + hps*multiplier*60);
-			temp = new textBox(30, "Arial", this.x, this.y, "Boost! +" + simplifyNumber(boost), "#000000", true);
+			temp = new stringBox(30, this.x, this.y, "Boost! +" + simplifyNumber(boost), 50, myGameArea.container);
 		},
 		interact: function() {
 			var boost = (10 + hps*multiplier*60);
@@ -25,7 +25,7 @@ var honeyPotEffects = [
 		effectLength: 10000,
 		imageSrc: "x10image.png",
 		text: function() {
-			temp = new textBox(30, "Arial", this.x, this.y, "Hyper! x10 Production", "#000000", true);
+			temp = new stringBox(30, this.x, this.y, "Hyper! x10 Production", 50, myGameArea.container);
 		},
 		interact: function() {
 			// Creates timer for the effect
@@ -48,7 +48,7 @@ var honeyPotEffects = [
 		effectLength: 15000,
 		imageSrc: "flowerbundleoutline.png",
 		text: function() {
-			temp = new textBox(30, "Arial", this.x, this.y, "Flower Power! ", "#000000", true);
+			temp = new stringBox(30, this.x, this.y, "Flower Power! ", 50, myGameArea.container);
 		},
 		interact: function() {
 			// creates timer for this efect
