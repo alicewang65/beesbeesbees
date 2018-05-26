@@ -1,6 +1,6 @@
-// The object used for upgrade boosts or displaying Honey Pot effect timers.
+// The object is used for honey pots and displaying Honey Pot effect timers.
 // This object will probably never be used, but can be a parent object of different boost types.
-function boost(x, y, width, height, imageSrc)
+function boost(x, y, width, height, imageSrc, symbol)
 {
 	this.width = width;
 	this.height = height;
@@ -21,9 +21,17 @@ function boost(x, y, width, height, imageSrc)
 	this.image.style.width = this.width + "px";
 	this.image.style.height = this.height + "px";
 	this.image.style.position = "absolute";
-
 	this.node.appendChild(this.image);
-	gameContainer.appendChild(this.node);
+
+	if (symbol !== null)
+	{
+		this.symbol = document.createElement("IMG");
+		this.symbol.setAttribute("src", symbol);
+		this.symbol.style.width = this.width*.9 + "px";
+		this.symbol.style.height = this.height*.9 + "px";
+		this.symbol.style.position = "absolute";
+		this.node.appendChild(this.symbol);
+	}
 
 
 	this.getX = function() {
@@ -57,9 +65,11 @@ function boost(x, y, width, height, imageSrc)
 function effectTimer(reference)
 {
 	// Create the general structure of a timer
+	boost.call(this, ((canvasWidth*0.95) - boostSize), (canvasHeight*0.05), boostSize, boostSize, "hexagon.png", reference.imageSrc);
 
-	boost.call(this, ((canvasWidth*0.95) - boostSize), (canvasHeight*0.05), boostSize, boostSize, reference.imageSrc);
-	this.node.setAttribute("class", "hexagon");
+	gameContainer.appendChild(this.node);
+
+	this.node.setAttribute("class", "effectTimer");
 
 	// Set the honey pot reference to this timer
 	this.reference = reference;
@@ -75,7 +85,7 @@ function effectTimer(reference)
 	this.whitespace = document.createElement("div");
 	this.whitespace.setAttribute("class", "timer_whitespace");
 	this.whitespace.style.height = "0 px";
-	this.whitespace.style.width = boostSize + 8 + "px";
+	this.whitespace.style.width = boostSize + "px";
 	this.whitespace.style.position = "absolute";
 	this.node.appendChild(this.whitespace);
 
@@ -123,7 +133,7 @@ function effectTimer(reference)
 	this.update = function()
 	{
 		// Fix the y positioning of the timer in case a timer above it has been deleted.
-		buffer = (canvasHeight*0.05) + ((boostSize + 34)*1.25)*activeEffects.indexOf(this.reference);
+		buffer = (canvasHeight*0.05) + (boostSize*1.25)*activeEffects.indexOf(this.reference);
 		this.setY(buffer);
 
 		// If the timer has run out, delete it.
@@ -136,7 +146,60 @@ function effectTimer(reference)
 		else
 		{
 			this.currentTime -= 20;
-			this.whitespace.style.height = (1 - this.currentTime/this.length)*(boostSize + 34) + "px";
+			this.whitespace.style.height = (1 - this.currentTime/this.length)*(boostSize) + "px";
 		}
 	}
+}
+
+// The object for "mini upgrades", which appear in a section of the store. These are very similar in appearance to timers,
+// and decrease the amount of time it takes for a honey pot to spawn.
+function miniUpgrade(type)
+{
+	// Create the node structure
+	boost.call(this, 0, 0, miniSize, miniSize, "upgradehexagon.png", "honey pot.png");
+
+	// Add the node to the store area that contains all mini upgrades
+	upgradeArea.storeArea.appendChild(this.node);
+
+	this.node.setAttribute("class", "miniUpgrade unselectable");
+
+	// Add all event listeners for the mini
+	var that = this;
+	this.node.addEventListener("mouseover", function(){that.hover()});
+	this.node.addEventListener("mouseout", function(){that.unhover()});
+	this.node.addEventListener("click", function(){that.click()});
+
+	// When hovered over, this mini will have a background color of gray
+	this.hover = function()
+	{
+		this.node.style.backgroundColor = "#d9d9d9";
+	}
+
+	// When the user stops hovering, the mini regains a white background
+	this.unhover = function()
+	{
+		this.node.style.backgroundColor = "#ffffff";
+	}
+
+	// When clicked the mini will decrease the time it takes for a honey pot to spawn, then remove itself from the store.
+	// We didn't have enough time to make/show a cost for minis, so they are free.
+	this.click = function()
+	{
+		// Makes sure that purchasing the mini won't cause a fatal error with divide by 0 or negative number
+		if (hpSpawnRate > 250)
+		{
+			// Reduce time it takes to spawn a honey pot by 5 seconds
+			hpSpawnRate -= 250;
+		}
+
+		// Deletes the node from the game container
+		this.node.parentNode.removeChild(this.node);
+
+		// Removes this mini upgrade from the array of available ones
+		arrayIndex = miniUpgrades.indexOf(this);
+		miniUpgrades.splice(arrayIndex, 1);
+	}
+
+	// Add the mini upgrade to the array holding mini references, after it's been created
+	miniUpgrades.push(this);
 }

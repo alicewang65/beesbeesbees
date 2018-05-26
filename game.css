@@ -24,39 +24,6 @@ body
 	cursor: none;
 }
 
-.hexagon {
-  position: absolute;
-  background-color: #e9ca5c;
-  margin: 14.43px 0;
-  border-left: solid 2px #333333;
-  border-right: solid 2px #333333;
-}
-
-.hexagon:before,
-.hexagon:after {
-  content: "";
-  position: absolute;
-  width: 35.5px;
-  height: 35.5px;
-  -webkit-transform: scaleY(0.5774) rotate(-45deg);
-  -ms-transform: scaleY(0.5774) rotate(-45deg);
-  transform: scaleY(0.5774) rotate(-45deg);
-  background-color: inherit;
-  left: 6.1px; /*5.3223px;*/
-}
-
-.hexagon:before {
-  top: -19.4px;
-  border-top: solid 2.8284px #333333;
-  border-right: solid 2.8284px #333333;
-}
-
-.hexagon:after {
-  bottom: -19.3px;
-  border-bottom: solid 2.8284px #333333;
-  border-left: solid 2.8284px #333333;
-}
-
 /* The Modal (background) */
 .modal {
     position: fixed;  /*Stay in place */
@@ -113,15 +80,17 @@ body
 	text-align: center;
 	border: solid #262626 4px;
 	border-bottom: 0px;
+	box-sizing: border-box;
 }
 
 #storeArea
 {
 	background-color: gold;
 	position: relative;
-	border: solid #262626 4px;
+	border: solid #262626;
 	font-size: 30px;
 	text-align: center;
+	overflow: hidden;
 }
 
 .TextBox
@@ -129,6 +98,10 @@ body
 	position: absolute;
 	z-index: 1;
 	cursor: none;
+	border: 2px solid #000000;
+	border-radius: 5px;
+	padding: 2px;
+	background-color: gold;
 }
 
 .BoxText
@@ -147,7 +120,7 @@ body
 	font-size: 40px;
 	text-align: left;
 	cursor: pointer;
-
+	box-sizing: border-box;
 	border-style: outset;
 }
 
@@ -182,19 +155,28 @@ body
 .effectTimer
 {
 	position: absolute;
-	border: solid #262626;
-	border-width: 4px;
 	cursor: pointer;
- 	background-color: gold;
+	background-color: gold;
+	z-index: 5;
 }
 
 .timer_whitespace
 {
 	position: absolute;
-	background-color: 	 #4dff4d;
-	background-image: url(https://www.transparenttextures.com/patterns/grey-sandbag.png);
+	background-color: white;
 	cursor: pointer;
-	z-index: 3;
-	top: -17px;
-	left: -2px;
+	z-index: -1;
+}
+
+.miniUpgrade
+{
+	text-align: left;
+	background-color: white;
+	position: relative;
+	display: inline-block;
+	float: left;
+	cursor: pointer;
+	z-index: 5;
+	border: 1px solid #000000;
+	box-sizing: border-box;
 }
