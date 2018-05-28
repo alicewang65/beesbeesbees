@@ -7,7 +7,7 @@ function upgrade(name, startCost, honeyPerSec)
 
 	// Save cost, upgrade count, and honey variables to this object
 	this.cost = startCost;
-	this.costString = this.cost.toString();
+	this.costString = this.cost.toString() + " nanoliters";
 	this.count = 0;
 	this.name = name;
 	this.isHovering = false;

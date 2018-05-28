@@ -153,7 +153,10 @@ function resizeCanvas()
 	canvasHeight = window.innerHeight*0.95;
 	upgradeWidth = window.innerWidth*0.20;
 	upgradeHeight = canvasHeight;
-	
+
+	storeWidth = (upgradeWidth - 8) + "px";
+	storeHeight = canvasHeight*.3 + "px";
+
 	//update the x and y position of the score box
 	scoreBoxX = canvasWidth*(.05);
 	socreBoxY = canvasHeight*(.05);
@@ -165,6 +168,10 @@ function resizeCanvas()
 	//changes the score box object's positions
 	scoreBox.setX(scoreBoxX);
 	scoreBox.setY(scoreBoxY);
+
+	storeArea.style.width = storeWidth;
+	storeArea.style.height = storeHeight;
+	storeSign.style.width = storeWidth;
 
 	//resizes the upgrades
 	for (let instance of upgrades)
