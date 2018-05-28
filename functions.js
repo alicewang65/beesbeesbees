@@ -130,7 +130,7 @@ var upgradeArea =
 		this.storeSign.innerHTML = "STORE";
 
 		this.storeArea.setAttribute("id", "storeArea");
-		this.storeArea.style.width = upgradeCanvasWidth-8 + "px";
+		this.storeArea.style.width = upgradeCanvasWidth + "px";
 		this.storeArea.style.borderWidth = "4px";
 
 		var area = this.storeArea.style.width;
@@ -174,10 +174,12 @@ var upgradeArea =
 		new miniUpgrade();
 
 		new upgrade("Worker Bee", 10, 1);
-		new upgrade("Queen Bee", 15, 2);
-		new upgrade("Hive", 50, 5);
-		new upgrade("Honey Farm", 100, 10);
-		new upgrade("Nectar CEO", 500, 100);
+		new upgrade("Queen Bee", 50, 2);
+		new upgrade("Hive", 100, 5);
+		new upgrade("Honey Farm", 500, 10);
+		new upgrade("Honey Plantation", 1000, 50)
+		new upgrade("Nectar CEO", 2500, 100);
+
 	},
 	clear : function() {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -192,6 +194,8 @@ function resizeCanvas()
 	canvasHeight = window.innerHeight*0.95;
 	upgradeWidth = window.innerWidth*0.20;
 	upgradeHeight = canvasHeight;
+
+	upgradeContainer.style.maxHeight = canvasHeight + "px";
 
 	storeWidth = (upgradeWidth - 8) + "px";
 	storeHeight = canvasHeight*.3 + "px";
@@ -209,13 +213,12 @@ function resizeCanvas()
 	scoreBox.setY(scoreBoxY);
 
 	storeArea.style.width = storeWidth;
-	storeArea.style.height = storeHeight;
 	storeSign.style.width = storeWidth;
 
 	//resizes the upgrades
 	for (let instance of upgrades)
 	{
-		instance.node.style.width = upgradeWidth + "px";
+		instance.node.style.width = storeWidth;
 	}
 
 }
@@ -266,9 +269,9 @@ function updateGameArea()
 		}
 
 		else
-			var color = "#ff8080";
+			var color = "#eb8a44"; //#ff8080
 
-		if (!instance.isHovering || scoreCount < instance.cost)
+		if (!instance.isHovering || scoreCount < instance.cost || instance.isHovering)
 		{
 			instance.node.style.backgroundColor = color;
 		}

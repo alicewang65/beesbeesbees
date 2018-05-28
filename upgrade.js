@@ -30,7 +30,7 @@ function upgrade(name, startCost, honeyPerSec)
 	this.node.style.height = "100px"; // This just looks nice
 
 	// Text that goes inside the upgrade node
-	this.node.innerHTML = this.name + "<br> <p class = \"upgradeCost\"> Cost: " + this.costString + "</p>";
+	this.node.innerHTML= "<span class='upgradeName'>" + this.name + "</span> <br> <p class = \"upgradeCost\"> Cost: " + this.costString + "</p>"
 
 	// Put the upgrade in the upgradeArea canvas
 	upgradeArea.container.appendChild(this.node);
@@ -57,7 +57,7 @@ function upgrade(name, startCost, honeyPerSec)
 			this.cost *= 1.25;
 			this.costString = simplifyNumber(this.cost);
 			this.count += 1;
-			this.node.innerHTML = this.name + "<br> <p class = \"upgradeCost\"> Cost: " + this.costString + "</p> <p class = \"upgradeCount\"> " + this.count + "</p>"
+			this.node.innerHTML = "<span class='upgradeName'>" + this.name + "</span> <br> <p class = \"upgradeCost\"> Cost: " + this.costString + "</p> <p class = \"upgradeCount\"> " + this.count + "</p>"
 		}
 	}
 }
