@@ -98,20 +98,16 @@ function textBox(fontSize, fontStyle, x, y, text, color, animate)
 }
 
 
-// The object used for any textboxes that need to be divs (not canvas). Appends the div to the passed in container
-function stringBox(fontSize, x, y, text, time, container)
+// The object used for any textboxes that need to be divs (not canvas). Appends the div to the game wrapper
+function stringBox(fontSize, x, y, text, time)
 {
 	textBox.call(this, fontSize, "Arial", x, y, text, "#000000", false);
 	this.y = y;
 	this.time = time;
 
-	// The node that carries the div (required for placing the div in the game container)
+	// The node that carries the div (required for placing the div in the wrapper)
 	this.node = document.createElement("div");
 	this.node.setAttribute("class", "TextBox unselectable");
-
-	// Node Styling
-	this.node.style.left = this.x + "px";
-	this.node.style.top = this.y + "px";
 
 	this.par = document.createElement("P");
 	this.par.setAttribute("class", "BoxText unselectable");
@@ -120,13 +116,18 @@ function stringBox(fontSize, x, y, text, time, container)
 	this.par.style.fontStyle = this.fontStyle;
 	this.par.style.color = this.fontColor;
 
-	this.node.appendChild(this.par);
-	container.appendChild(this.node);
-
 	//Gets the width of the text in the current font
 	this.width = this.par.getBoundingClientRect().width;
 	// Text height is just font size
 	this.height = this.par.getBoundingClientRect().height;
+
+	// Node Styling
+	this.node.style.left = this.x - this.width + "px";
+	this.node.style.top = this.y - this.height + "px";
+
+	var container = document.getElementById("wrapper");
+	this.node.appendChild(this.par);
+	container.appendChild(this.node);
 
 	this.getY = function() {
 		return this.y;
@@ -166,12 +167,4 @@ function stringBox(fontSize, x, y, text, time, container)
 			return;
 		}
 	}
-}
-
-
-
-// The object used for detail textbox, which appear when the user hovers over an interactable object.
-function detailsBox()
-{
-	// Start coding
 }

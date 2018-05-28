@@ -7,7 +7,7 @@ var honeyPotEffects = [
 		effectLength: 0,
 		text: function() {
 			var boost = (10 + hps*multiplier*60);
-			temp = new stringBox(30, this.x, this.y, "Boost! +" + simplifyNumber(boost), 50, myGameArea.container);
+			temp = new stringBox(30, canvasWidth/2, canvasHeight*.8, "Boost! +" + simplifyNumber(boost), 150);
 		},
 		interact: function() {
 			var boost = (10 + hps*multiplier*60);
@@ -25,7 +25,7 @@ var honeyPotEffects = [
 		effectLength: 10000,
 		imageSrc: "x10image.png",
 		text: function() {
-			temp = new stringBox(30, this.x, this.y, "Hyper! x10 Production", 50, myGameArea.container);
+			temp = new stringBox(30, canvasWidth/2, canvasHeight*.8, "Hyper! x10 Production", 150);
 		},
 		interact: function() {
 			// Creates timer for the effect
@@ -46,9 +46,9 @@ var honeyPotEffects = [
 	{
 		name: "Flower Power",
 		effectLength: 15000,
-		imageSrc: "flowerbundleoutline.png",
+		imageSrc: "blackwhiteflower.png",
 		text: function() {
-			temp = new stringBox(30, this.x, this.y, "Flower Power! ", 50, myGameArea.container);
+			temp = new stringBox(30, canvasWidth/2, canvasHeight*.8, "Flower Power! ", 150);
 		},
 		interact: function() {
 			// creates timer for this efect
@@ -99,7 +99,10 @@ function honeyPot()
 	// Create the general structure of a honeyPot by extending the boost framework
 	randomX = Math.random()*(canvasWidth - honeyPotSize);
 	randomY = Math.random()*(canvasHeight - honeyPotSize);
-	boost.call(this, randomX, randomY, honeyPotSize, honeyPotSize, "honey pot.png");
+	boost.call(this, randomX, randomY, honeyPotSize, honeyPotSize, "honey pot.png", null);
+
+	gameContainer.appendChild(this.node);
+
 	this.node.setAttribute("class", "honeyPot");
 
 	var that = this; // I hate this
@@ -121,8 +124,8 @@ function honeyPot()
 	gameContainer.appendChild(this.node);
 
 	var that = this; // I hate this
-	// The node will self-delete after 3 seconds if it is not clicked
-	this.delete = setTimeout(function(){that.node.parentNode.removeChild(that.node)} , 3000);
+	// The node will self-delete after 5 seconds if it is not clicked
+	this.delete = setTimeout(function(){that.node.parentNode.removeChild(that.node)} , 5000);
 
 	// Called when the honey pot (node) is clicked
 	this.click = function()

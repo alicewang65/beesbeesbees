@@ -12,6 +12,7 @@ var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Sp
 var flowerBundle = false;	// Whether or not flowers come in bundles (Flower Power)
 
 var upgrades = [];	// The array of upgrades on screen
+var miniUpgrades = [];
 var activeEffects = [];	// The array of active honeyPot effects
 
 function hph()
@@ -20,6 +21,8 @@ function hph()
 }
 var hps = 0;	// Honey per second (auto-collected)
 var multiplier = 1;
+var hpSpawnRate = 1500;	// How often a honey pot spawns. Spawn rate * 20 = ms it takes to spawn (e.g 1500 spawn rate is a 30 second spawn rate)
+						// The extra 1 is for presentation day.
 
 var scoreBox;	// The score textBox
 var autoCollect; // The user's honey per second
@@ -34,6 +37,7 @@ const flowerWidth = 70;		// The max width of the flower
 const flowerHeight = 90;	// The max height of the flower
 const honeyPotSize = 100;	// The height and width of a honey pot
 const boostSize = 50;		// The height and width of a boost box
+var miniSize;
 var frameNo = 0;			// The number of frames that have passed
 
 //sets the x and y positions of the score box
@@ -121,18 +125,53 @@ var upgradeArea =
 		this.container.style.maxHeight = canvasHeight + "px";
 
 		this.storeSign.setAttribute("id", "storeSign");
-		this.storeSign.style.width = (upgradeCanvasWidth - 8) + "px";
+		this.storeSign.setAttribute("class", "unselectable");
+		this.storeSign.style.width = upgradeCanvasWidth + "px";
 		this.storeSign.innerHTML = "STORE";
 
 		this.storeArea.setAttribute("id", "storeArea");
-		this.storeArea.style.width = (upgradeCanvasWidth - 8) + "px";
-		this.storeArea.style.height = upgradeCanvasHeight*(.3) + "px";
+		this.storeArea.style.width = upgradeCanvasWidth-8 + "px";
+		this.storeArea.style.borderWidth = "4px";
+
+		var area = this.storeArea.style.width;
+		var size = parseFloat(area.substring(0, area.length-2));
+		miniSize = size/5;
+
+		this.storeArea.style.height = miniSize + "px";
 
 		// Add this container to the start of html body, after the game canvas
 		var mainCanvas = document.getElementById("gameContainer");
 		mainCanvas.parentNode.insertBefore(this.container, mainCanvas.nextSibling);
 		this.container.appendChild(this.storeSign);
 		this.container.appendChild(this.storeArea);
+
+		this.storeArea.addEventListener("mouseover", function(){storeArea.hover()});
+		this.storeArea.addEventListener("mouseout", function(){storeArea.unhover()});
+
+		storeArea.hover = function()
+		{
+			// 5 not 4
+			upgradeArea.storeArea.style.height = Math.ceil(miniUpgrades.length/4)*miniSize + "px";
+		}
+
+		storeArea.unhover = function()
+		{
+			if (miniUpgrades.length > 0)
+			{
+				upgradeArea.storeArea.style.height = miniSize + "px";
+			}
+
+			else
+				upgradeArea.storeArea.style.height = "0px"
+		}
+
+		new miniUpgrade();
+		new miniUpgrade();
+		new miniUpgrade();
+		new miniUpgrade();
+		new miniUpgrade();
+		new miniUpgrade();
+		new miniUpgrade();
 
 		new upgrade("Worker Bee", 10, 1);
 		new upgrade("Queen Bee", 15, 2);
@@ -176,7 +215,7 @@ function resizeCanvas()
 	//resizes the upgrades
 	for (let instance of upgrades)
 	{
-		instance.node.style.width = (upgradeWidth-8) + "px";
+		instance.node.style.width = upgradeWidth + "px";
 	}
 
 }
@@ -194,11 +233,11 @@ function updateGameArea()
 		obstacleChange();
 	}
 
-	// Every 250 frames (or 5 seconds), a honey pot will spawn
-	if (frameNo % 250 == 0)
+	// Every time the spawn rate is hit, a honey pot will spawn
+	if (frameNo % hpSpawnRate == 0)
 	{
 		hp = new honeyPot();
-		avoid(hp, [scoreBox, autoCollect]);
+		avoid(hp, avoidArray);
 	}
 
 	scoreString = simplifyNumber(scoreCount);
@@ -447,7 +486,7 @@ function simplifyNumber(number)
 
 	else
 	{
-		return "Infinity";
+		return "Infinity ";
 	}
 	
 }

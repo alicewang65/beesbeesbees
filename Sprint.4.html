@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Makes the screen fit the device -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<title>Bees Bees Bees</title>
+		<link rel="shortcut icon" href="bee.png" type="image/x-icon"/> <!-- icon on browser tab-->
+
+		<link rel="stylesheet" type="text/css" href="game.css"/> <!-- Css for game objects -->
+		<script type="text/javascript" src="functions.js"></script> <!--javascript functions-->
+	</head>
+
+
+<body onload="startGame()">
+
+	<div id="wrapper">
+
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+
+		 	<!-- Modal content -->
+		 	<div class="modal-content unselectable">
+		 
+		 	<span class="close">&times;</span>
+		    
+		    	<p> 
+					Welcome to Bees! Bees! Bees! <br><br>
+					Drag your cursor and bee around the screen to collect as much honey as possible from the flowers. Just watch out for rocks, they can decrease your score. The more honey you collect the more fun upgrades and twists will become available! <br><br>
+					Happy collecting! <br><br>
+					-The Bee Team 
+				</p>
+		  	</div>
+
+		</div>
+
+		<script>
+
+			// Get the modal
+			var modal = document.getElementById('myModal');
+
+			// Get the <span> element that closes the modal
+			var span = document.getElementsByClassName("close")[0];
+
+			// When the user clicks on <span> (x), close the modal
+			span.onclick = function() {
+			    modal.style.display = "none";
+			}
+			
+		</script>
+
+
+		<script src="myBee.js"></script>
+		<script src="flower.js"></script>
+		<script src="rock.js"></script>
+		<script src="textBox.js"></script>
+		<script src="upgrade.js"></script>
+		<script src="honeyPot.js"></script>
+		<script src="boost.js"></script>
+
+	</div>
+
+</body>
+</html>

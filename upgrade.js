@@ -26,7 +26,7 @@ function upgrade(name, startCost, honeyPerSec)
 	this.node.addEventListener("click", function(){that.buy()});
 
 	// Set the css and positioning for the upgrade
-	this.node.style.width = (upgradeCanvasWidth-8) + "px"; // Magic Number for Border
+	this.node.style.width = upgradeCanvasWidth + "px"; // Magic Number for Border
 	this.node.style.height = "100px"; // This just looks nice
 
 	// Text that goes inside the upgrade node
