@@ -133,8 +133,9 @@ var upgradeArea =
 		this.storeArea.style.width = upgradeCanvasWidth + "px";
 		this.storeArea.style.borderWidth = "4px";
 
+		// Gets the width of the store, and uses it to set the mini upgrade size.
 		var area = this.storeArea.style.width;
-		var size = parseFloat(area.substring(0, area.length-2));
+		var size = parseFloat(area.substring(0, area.length));
 		miniSize = size/5;
 
 		this.storeArea.style.height = miniSize + "px";
@@ -197,6 +198,7 @@ function resizeCanvas()
 
 	upgradeContainer.style.maxHeight = canvasHeight + "px";
 
+	// The store area border is set outside the div, so the actual width of the store is 8px less
 	storeWidth = (upgradeWidth - 8) + "px";
 	storeHeight = canvasHeight*.3 + "px";
 
@@ -429,7 +431,7 @@ function simplifyNumber(number)
 	if (number < 0)
 	{
 		number = 0;
-		return "0";
+		return "0 ";
 	}
 
 	else if (number < Math.pow(10, 3))
