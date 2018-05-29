@@ -44,7 +44,7 @@ var frameNo = 0;			// The number of frames that have passed
 var scoreBoxY = canvasHeight*(.05);
 var scoreBoxX = canvasWidth*(.05);
 
-var upgradeCanvasWidth = canvasWidth*0.28;
+var upgradeCanvasWidth = window.innerWidth*0.20;
 var upgradeCanvasHeight = canvasHeight;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
