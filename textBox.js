@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Text box file for the functionality of the texts boxes.
+//6/3/18
+
+
 // The object used for all canvas context drawn textboxes.
 // fontSize, x, and y are ints, and everything else is a string/bool
 function textBox(fontSize, fontStyle, x, y, text, color, animate)

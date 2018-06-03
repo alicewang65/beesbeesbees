@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Boost file for the functionality of the boosts, including the timers.
+//6/3/18
+
+
 // The object is used for honey pots and displaying Honey Pot effect timers.
 // This object will probably never be used, but can be a parent object of different boost types.
 function boost(x, y, width, height, imageSrc, symbol)

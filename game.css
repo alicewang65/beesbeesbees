@@ -1,3 +1,10 @@
+/*
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//CSS file! So that the game looks pretty!
+//6/3/18
+*/
+
 body
 {
 	font-family: Arial, Helvetica, sans-serif;
@@ -7,17 +14,18 @@ body
 {
 	/* This code makes text unselectable/unhighlightable */
 	-webkit-touch-callout: none; /* iOS Safari */
-		-webkit-user-select: none; /* Safari */
-		-khtml-user-select: none; /* Konqueror HTML */
-		-moz-user-select: none; /* Firefox */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none;
 }
 
 #myCanvas
 {
+	/*Styles the main game canvas area*/
 	border: 1px solid #000000;
-	background-color:  #4dff4d; /*#99ffb3; */
+	background-color:  #4dff4d;
 	background-image: url(https://www.transparenttextures.com/patterns/grey-sandbag.png);
 	position: relative;
 	display: inline-block;
@@ -47,14 +55,13 @@ body
     cursor: default;
 }
 
-/* The Close Button */
+/* The Close Button for the modal*/
 .close {
     color: #00394d;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
-
 .close:hover,
 .close:focus {
     color: #000;
@@ -64,17 +71,20 @@ body
 
 #gameContainer, #upgradeContainer
 {
+	/*Styles aspects of the game and upgrade containers*/
 	display: inline-block;
 	vertical-align: top;
 }
 
 #upgradeContainer
 {
+	/*So when there are more upgrades than can fit in the space, the user can scroll and see the rest that are overflowing*/
 	overflow-y: scroll;
 }
 
 #storeSign
 {
+	/*Styles the store sign*/
 	background-color: gray;
 	position: relative;
 	font-size: 30px;
@@ -85,10 +95,10 @@ body
 
 #storeArea
 {
+	/*Styles the store area, which is the mini upgrade area, not where the main upgrades are located*/
 	background-color: gold;
 	position: relative;
 	border: solid #262626;
-/*	font-size: 30px;*/
 	text-align: center;
 	overflow: hidden;
 }
@@ -113,44 +123,51 @@ body
 
 .upgrade
 {
+	/*Styles the upgrade area*/
 	position: relative;
 	background-color: white;
 	border: solid #262626; /*#262626*/
 	border-width: 4px;
 	text-align: left;
 	cursor: pointer;
-/*	box-sizing: border-box;*/
 	border-style: outset;
 }
 
 .upgrade:hover
 {
+	/*Styles when the mouse is hovering over the upgrade*/
 	border-style: inset;
 }
 
 .upgradeName
 {
+	/*Styles the name of the upgrades, such that it scales as the window is being resized. (vw) */
 	font-size: 2.5vw;
 }
 
 .upgradeCost
 {
-	/* These are just random numbers that looked sort of good */
+	/*Font size of the upgrade costs scales*/
 	font-size: 1.5vw;
+	/*Styles the postition of the upgrade cost text*/
 	margin-top: 10px;
 	margin-left: 30px;
 }
 
 .upgradeCount
 {
+	/*Styles the text showing the number of that upgrade a user has*/
 	position: absolute;
+	/*Font size of the upgrade count scales*/
 	font-size: 1.5vw;
+	/*Placement*/
 	right: 0px;
 	top: 0px;
 }
 
 .honeyPot
 {
+	/*Styles the honey pots*/
 	position: absolute;
 	width: 100px;
 	height: 100px;
@@ -159,6 +176,7 @@ body
 
 .effectTimer
 {
+	/*Styles the timers that pop up when a user gets the honey pots*/
 	position: absolute;
 	cursor: pointer;
 	background-color: gold;
@@ -167,6 +185,7 @@ body
 
 .timer_whitespace
 {
+	/*Styles the timers that pop up when a user gets the honey pots*/
 	position: absolute;
 	background-color: white;
 	cursor: pointer;
@@ -175,6 +194,7 @@ body
 
 .miniUpgrade
 {
+	/*Styles the mini upgrades*/
 	text-align: left;
 	background-color: white;
 	position: relative;
@@ -182,6 +202,5 @@ body
 	float: left;
 	cursor: pointer;
 	z-index: 5;
-	/*border: 1px solid #000000;*/
 	box-sizing: border-box;
 }

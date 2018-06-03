@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Rock file for the functionality of the rocks in the game.
+//6/3/18
+
+
 // Creates canvas components
 // image is an html image element
 function rock(x, y)

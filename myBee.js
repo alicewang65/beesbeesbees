@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Bee file for the functionality of the bee, including moving it and drawing it.
+//6/3/18
+
+
 // Bee object, which interacts with game screen and follows the mouse
 var myBee = 
 {

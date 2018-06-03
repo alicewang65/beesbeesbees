@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Flower file for the functionality of the flowers in the game.
+//6/3/18
+
+
 // Creates flower object
 // image is an html image element
 function flower(x, y, image)

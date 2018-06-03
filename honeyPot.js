@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Honey Pot file for the functionality of the different honey pot effects, including boost, hyper and flower power.
+//6/3/18
+
+
 // The array of possible honeyPot effects, and their properties. Every honeyPot will contain the properties of one of these effects.
 // Text is the textbox the effect creates, interact begins the intitial effects, startEffect begins the effect, and endEffect ends the effect.
 var honeyPotEffects = [

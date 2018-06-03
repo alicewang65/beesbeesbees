@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Upgrade file for the functionality of the upgrades, including updating costs and number of each upgrade.
+//6/3/18
+
+
 // Creates upgrade object
 function upgrade(name, startCost, honeyPerSec)
 {

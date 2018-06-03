@@ -1,3 +1,9 @@
+//Parker M., Alice W., Catilin C.
+//Bees Bees Bees
+//Function file with the main functions. The bulk of the functionality of the game is located in this file.
+//6/3/18
+
+
 // VARIABLES AND CONSTANTS ///////////////////////////////////////////////////////////////////////////////////////
 
 var myBee;		// The bee
@@ -5,20 +11,21 @@ var allObjects = []; // The array of every object that needs to be drawn
 var avoidArray = []; // The array of objects that spawing flowers/etc. should avoid.
 
 var flowers = [];	// The array of flowers, used for creating/deleting flowers
-var rocks = [];
+var rocks = [];	// The array of rocks
 var maxFlowers = 10; // The maximum amount of flowers that can appear on the screen at once
 var maxFlowerHoney = 150; // The maximum amount of honey a flower can contain
 var collectionSpeed = 30;	// The rate at which flowers lose honey. Collection Speed * 20 = ms it takes to collect points (e.g 50 collectionSpeed = 50 * 20 = 1000 ms)
 var flowerBundle = false;	// Whether or not flowers come in bundles (Flower Power)
 
 var upgrades = [];	// The array of upgrades on screen
-var miniUpgrades = [];
+var miniUpgrades = []; // The array of mini upgrades
 var activeEffects = [];	// The array of active honeyPot effects
 
 function hph()
 {
 	return maxFlowerHoney/3;
 }
+
 var hps = 0;	// Honey per second (auto-collected)
 var multiplier = 1;
 var hpSpawnRate = 1500;	// How often a honey pot spawns. Spawn rate * 20 = ms it takes to spawn (e.g 1500 spawn rate is a 30 second spawn rate)
@@ -29,21 +36,22 @@ var autoCollect; // The user's honey per second
 var scoreCount = 0;	// The current score count
 var scoreString = "0"; // The score converted to a string (for millions, billions, etc.)
 
-var canvasWidth = window.innerWidth*0.75;	// Width of the canvas - 1210 originally
-var canvasHeight = window.innerHeight*0.95;	// Height of the canvas - 710 originally
+var canvasWidth = window.innerWidth*0.75;	// Width of the canvas 
+var canvasHeight = window.innerHeight*0.95;	// Height of the canvas 
 const beeSize = 50;			// The height/width of the bee
 const rockSize = 50;		// The height/width of rocks
 const flowerWidth = 70;		// The max width of the flower
 const flowerHeight = 90;	// The max height of the flower
 const honeyPotSize = 100;	// The height and width of a honey pot
 const boostSize = 50;		// The height and width of a boost box
-var miniSize;
+var miniSize;				
 var frameNo = 0;			// The number of frames that have passed
 
 //sets the x and y positions of the score box
 var scoreBoxY = canvasHeight*(.05);
 var scoreBoxX = canvasWidth*(.05);
 
+//the width and height of the upgrade area, based off of the size of the window
 var upgradeCanvasWidth = window.innerWidth*0.20;
 var upgradeCanvasHeight = canvasHeight;
 
@@ -146,6 +154,7 @@ var upgradeArea =
 		this.container.appendChild(this.storeSign);
 		this.container.appendChild(this.storeArea);
 
+		//event listeners so that when moused over, area expands/drops down
 		this.storeArea.addEventListener("mouseover", function(){storeArea.hover()});
 		this.storeArea.addEventListener("mouseout", function(){storeArea.unhover()});
 
@@ -166,6 +175,7 @@ var upgradeArea =
 				upgradeArea.storeArea.style.height = "0px"
 		}
 
+		//creation of miniupgrades
 		new miniUpgrade();
 		new miniUpgrade();
 		new miniUpgrade();
@@ -174,6 +184,7 @@ var upgradeArea =
 		new miniUpgrade();
 		new miniUpgrade();
 
+		//creation of upgrades
 		new upgrade("Worker Bee", 10, 1);
 		new upgrade("Queen Bee", 50, 2);
 		new upgrade("Hive", 100, 5);
@@ -187,7 +198,7 @@ var upgradeArea =
 	}
 }
 
-//resizes the canvas if the window is resized
+//resizes different aspects of the game as the window is resized
 function resizeCanvas()
 {
 	//updates the width and height of the canvases
@@ -214,6 +225,7 @@ function resizeCanvas()
 	scoreBox.setX(scoreBoxX);
 	scoreBox.setY(scoreBoxY);
 
+	//changes the store area's and sign's width;
 	storeArea.style.width = storeWidth;
 	storeSign.style.width = storeWidth;
 
